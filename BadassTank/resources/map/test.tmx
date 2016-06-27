@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="test_tilset" tilewidth="32" tileheight="32" spacing="1" margin="1">
+  <image source="tileset/test_tilset.png" trans="ff00ff" width="67" height="34"/>
+  <tile id="1">
+   <properties>
+    <property name="collision" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Calque de Tile 1" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2VsRIAEAxDy/9/tMVKNYfQy5CF8JxWFDMrktRVD2uFHz1rxC9+zDOr32xsNIfwkT5G9/qJ79V/B9/zZu9/Bn/0hqIZi+Yvm8++f/HX1tzIn5fz9xaf+f963uz9z+CfFNLHUl41Dan3lgAQAAA=
+  </data>
+ </layer>
+</map>
