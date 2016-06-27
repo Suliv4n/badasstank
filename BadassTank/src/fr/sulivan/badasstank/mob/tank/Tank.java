@@ -10,8 +10,10 @@ import org.newdawn.slick.geom.Circle;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.hitbox.Hitbox;
+import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
+import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.util.PolygonFactory;
 
 /**
@@ -73,7 +75,7 @@ public class Tank {
 		health = getMaximumHealth();
 	}
 	
-	public void render(boolean center, Graphics g){
+	public void render(boolean center, Graphics g, Map map){
 		
 		int displayedX = x;
 		int displayedY = y;
@@ -81,6 +83,10 @@ public class Tank {
 		if(center){
 			displayedX = Configuration.SCREEN_WIDTH / 2;
 			displayedY = Configuration.SCREEN_HEIGHT / 2;
+		}
+		else{
+			displayedX += map.getX();
+			displayedY += map.getY();
 		}
 
 		double angle = Math.toRadians(90) - Math.toRadians(rotation);
@@ -135,6 +141,13 @@ public class Tank {
 			body.setColor(3, r, g, b);
 	}
 	
+	public void setCoordinates(int x, int y) {
+		hitbox.setX(x);
+		hitbox.setY(y);
+		this.x = x;
+		this.y = y;
+	}
+	
 	public Hitbox getHitbox() {
 		return hitbox;
 	}
@@ -169,18 +182,42 @@ public class Tank {
 		return carterpillar.getSpeedRotation();
 	}
 	
-	public void update(Map map){
+	public void update(Map map, boolean center){
 		if(moving){
 			double dx = Math.cos(Math.toRadians(rotation)) * getSpeed() * (back ? -1 : 1);
 			double dy = Math.sin(Math.toRadians(rotation)) * getSpeed() * (back ? -1 : 1);
 			
-			if(!hitbox.copy(dx, dy).intersects(map.getHitbox())){
+			boolean collides = hitbox.copy(dx, dy).intersects(map.getHitbox());
+			if(!collides){
+				for(Player p : map.getPlayers()){
+					if(p != this){
+						if(hitbox.copy(dx, dy).intersects(p.getHitbox())){
+							collides = true;
+							/*
+							((Tank)p).hitbox.moveX(dx);
+							((Tank)p).hitbox.moveY(dy);
+							((Tank)p).x += dx;
+							((Tank)p).y += dy;
+							*/
+						}
+					}
+				}
+			}
+			
+			if(!collides){
 					
 				realX+=dx;
 				realY+=dy;
 				
 				x = (int) realX;
 				y = (int) realY;
+				
+				for(Player p : map.getPlayers()){
+					if(p != this){
+						p.getHitbox().moveX(-dx);
+						p.getHitbox().moveY(-dy);
+					}
+				}
 			
 			}
 		}

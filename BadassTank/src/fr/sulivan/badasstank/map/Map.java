@@ -2,14 +2,16 @@ package fr.sulivan.badasstank.map;
 
 import java.util.ArrayList;
 
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.tiled.TiledMap;
 
 import fr.sulivan.badasstank.hitbox.Hitbox;
+import fr.sulivan.badasstank.mob.displayer.Displayer;
+import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.util.PolygonFactory;
 
 public class Map {
 	
+	public ArrayList<Player> players;
 	private TiledMap tiledMap;
 	private Hitbox hitbox;
 	
@@ -19,6 +21,7 @@ public class Map {
 	public Map(TiledMap tiledMap){
 		this.tiledMap = tiledMap;
 		hitbox = new Hitbox();
+		players = new ArrayList<Player>();
 		
 		for(int x = 0; x < tiledMap.getWidth(); x++){
 			for(int y = 0; y < tiledMap.getHeight(); y++){
@@ -28,9 +31,9 @@ public class Map {
 					
 					if(collision){
 						hitbox.addShape(PolygonFactory.createRectangle(x*tiledMap.getTileWidth(), y*tiledMap.getTileHeight(), tiledMap.getWidth(), tiledMap.getHeight()));
+						break;
 					}
-					
-					break;
+
 				}
 			}
 		}
@@ -55,6 +58,24 @@ public class Map {
 		displayedX = x;
 		displayedY = y;
 	}
+
+	public int getY() {
+		return displayedY;
+	}
 	
+	public int getX() {
+		return displayedX;
+	}
+
+	public void registerPlayer(Player player){
+		players.add(player);
+	}
 	
+	public void unregisterPlayer(Player player){
+		players.remove(player);
+	}
+	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
 }

@@ -21,7 +21,7 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.hud.HUD;
-import fr.sulivan.badasstank.main.Zombiz;
+import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
 import fr.sulivan.badasstank.mob.player.Player;
@@ -52,16 +52,28 @@ public class Game extends BasicGameState{
 			throws SlickException {
 		
 
-		SpriteSheet sprites = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
-		Animation animation = new Animation(sprites, 0, 0, 2, 0,true, 100, true);
-		Carterpillar carterpillar = new Carterpillar(animation, 1.5,3);
-		Image body = new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18);
-		Canon canon = new Canon(new Image("resources/spritesheets/canons.png", new Color(255,0,255)).getSubImage(0, 0, 11, 17), new Image("resources/spritesheets/bullet.png", new Color(255,0,255)).getSubImage(0, 0, 8, 9), null, 3f, 100, 500);
-		player1 = new Player(carterpillar, canon, new Color(20,150,20), body, "Sulivan");
-		player2 = new Player(carterpillar, canon, new Color(20,20,150), body, "Joueur 2");
+		SpriteSheet sprites1 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
+		Animation animation1 = new Animation(sprites1, 0, 0, 2, 0,true, 100, true);
+		Carterpillar carterpillar1 = new Carterpillar(animation1, 1.5,3);
+		Image body1 = new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18);
+		Canon canon1 = new Canon(new Image("resources/spritesheets/canons.png", new Color(255,0,255)).getSubImage(0, 0, 11, 17), new Image("resources/spritesheets/bullet.png", new Color(255,0,255)).getSubImage(0, 0, 8, 9), null, 3f, 100, 500);
+		player1 = new Player(carterpillar1, canon1, new Color(20,150,20), body1, "Sulivan");
+		
+		
+		SpriteSheet sprites2 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
+		Animation animation2 = new Animation(sprites2, 0, 0, 2, 0,true, 100, true);
+		Carterpillar carterpillar2 = new Carterpillar(animation2, 1.5,3);
+		Image body2 = new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18);
+		Canon canon2 = new Canon(new Image("resources/spritesheets/canons.png", new Color(255,0,255)).getSubImage(0, 0, 11, 17), new Image("resources/spritesheets/bullet.png", new Color(255,0,255)).getSubImage(0, 0, 8, 9), null, 3f, 100, 500);
+		player2 = new Player(carterpillar2, canon2, new Color(20,20,150), body2, "Joueur 2");
+		
+		player2.setCoordinates(100, 0);
 		
 		
 		this.map = new Map(new TiledMap("resources/map/test.tmx"));
+		
+		map.registerPlayer(player1);
+		map.registerPlayer(player2);
 		
 		ParticleSystem particles = new ParticleSystem("resources/particles/test.png", 1500, new Color(255,0,255));
 		
@@ -83,7 +95,11 @@ public class Game extends BasicGameState{
 			throws SlickException {
 		
 		map.drawLayer(0);
-		player1.render(true, g);
+		player1.render(true, g, map);
+		player2.render(false, g, map);
+		
+		
+		
 		g.setColor(Color.white);
 		g.drawString("Joueur : " + player1.getX() + " ; " + player1.getY() + "  :  " + player1.getRotation() + "° ", 0, 0);
 		g.drawString("Curseur : " + cursorX + " ; " + cursorY, 0, 20);
@@ -94,6 +110,7 @@ public class Game extends BasicGameState{
 		
 		map.getHitbox().draw(new Color(0.5f, 0.2f, 0.2f, 0.5f), g);
 		player1.getHitbox().draw(new Color(0.2f, 0.2f, 0.5f, 0.5f), g);
+		player2.getHitbox().draw(new Color(0.2f, 0.2f, 0.5f, 0.5f), g);
 		
 		hud.render(g);
 	}
@@ -132,7 +149,7 @@ public class Game extends BasicGameState{
 			//}
 		}
 		if(in.isKeyDown(Input.KEY_F1)){
-			Zombiz.toggleFullScreen();
+			BadassTank.toggleFullScreen();
 		}
 
 		if(in.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
@@ -140,7 +157,7 @@ public class Game extends BasicGameState{
 		}
 		
 		player1.getCanon().setRotation(Configuration.SCREEN_WIDTH / 2, Configuration.SCREEN_HEIGHT / 2 , in.getAbsoluteMouseX(), in.getAbsoluteMouseY());
-		player1.update(map);
+		player1.update(map, true);
 		
 		ArrayList<Displayer> disposed = new ArrayList<Displayer>();
 		for(Displayer d : displayers){

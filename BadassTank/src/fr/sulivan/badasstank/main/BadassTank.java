@@ -9,7 +9,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 
-public class Zombiz extends StateBasedGame 
+public class BadassTank extends StateBasedGame 
 {
 	
 	 /**//**//**//**//**//**//**//**//**//**//**/
@@ -19,7 +19,7 @@ public class Zombiz extends StateBasedGame
 	private Game game;
 	private static boolean fullScreen = true;
 
-	public Zombiz(String name) {
+	public BadassTank(String name) {
 		super(name);
 	}
 
@@ -36,7 +36,7 @@ public class Zombiz extends StateBasedGame
 	
 	public static void main(String[] args){
 		try {
-			app = new AppGameContainer(new Zombiz("Super Badass Tank"));
+			app = new AppGameContainer(new BadassTank("Super Badass Tank"));
 			app.setDisplayMode(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT, false);
 			app.setTargetFrameRate(Configuration.FPS);
 			app.setShowFPS(false);
