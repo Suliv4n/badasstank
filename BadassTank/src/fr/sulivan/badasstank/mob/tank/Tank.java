@@ -1,8 +1,5 @@
 package fr.sulivan.badasstank.mob.tank;
 
-import java.util.ArrayList;
-
-import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -10,11 +7,9 @@ import org.newdawn.slick.geom.Circle;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.hitbox.Hitbox;
-import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
 import fr.sulivan.badasstank.mob.player.Player;
-import fr.sulivan.badasstank.util.PolygonFactory;
 
 /**
  * 
@@ -146,6 +141,8 @@ public class Tank {
 		hitbox.setY(y);
 		this.x = x;
 		this.y = y;
+		this.realX = x;
+		this.realY = y;
 	}
 	
 	public Hitbox getHitbox() {
@@ -193,12 +190,14 @@ public class Tank {
 					if(p != this){
 						if(hitbox.copy(dx, dy).intersects(p.getHitbox())){
 							collides = true;
-							/*
+							dx /= 2;
+							dy /= 2;
 							((Tank)p).hitbox.moveX(dx);
 							((Tank)p).hitbox.moveY(dy);
-							((Tank)p).x += dx;
-							((Tank)p).y += dy;
-							*/
+							((Tank)p).realX += dx;
+							((Tank)p).realY += dy;
+							((Tank)p).x = (int) ((Tank)p).realX;
+							((Tank)p).y = (int) ((Tank)p).realY;
 						}
 					}
 				}
