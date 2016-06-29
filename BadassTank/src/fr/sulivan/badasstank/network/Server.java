@@ -3,29 +3,48 @@ package fr.sulivan.badasstank.network;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.UUID;
+import java.util.function.Function;
 
-public class Serveur extends ServerSocket{
+public class Server extends ServerSocket{
 
 	private HashMap<String, Socket> clients;
 	public boolean running = false;
 	
-	public Serveur() throws IOException {
-		super();
-		
+	public Server(InetAddress host, int port) throws IOException {
+		super(port, 64, host);
 		clients = new HashMap<String, Socket>();
 	}
 	
+	public void start() throws NetworkException{
+		new Thread(() -> {
+			try{
+				run();
+			}
+			catch(NetworkException e){
+				System.err.println(e.getMessage());
+			}
+		});
+	}
 	
-	public void run() throws NetworkException{
+	private void run() throws NetworkException{
 		if(running){
 			throw new NetworkException("Server already running");
 		}
 		running = true;
 		while(running){
-			//todo accept client
+			try {
+				Socket newClient = accept();
+				String key = UUID.randomUUID().toString();
+				
+				clients.put(key, newClient);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
 		}
 	}
 	
@@ -44,6 +63,10 @@ public class Serveur extends ServerSocket{
 				send(message, key);
 			}
 		}
+	}
+	
+	public void stop(){
+		running = false;
 	}
 	
 	
