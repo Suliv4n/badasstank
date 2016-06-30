@@ -18,7 +18,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 public class Tank {
 	
 	private Carterpillar carterpillar;
-	private Image body;
+	private Body body;
 	
 	private int x;
 	private int y;
@@ -40,7 +40,7 @@ public class Tank {
 	private int maximumBaseHealth = 10;
 	private int health;
 	
-	public Tank(Carterpillar carterpillar, Canon canon, Color color, Image body, String name)
+	public Tank(Carterpillar carterpillar, Canon canon, Color color, Body body, String name)
 	{
 		
 		this.name = name;
@@ -52,7 +52,7 @@ public class Tank {
 		body.setCenterOfRotation(body.getWidth() / 2, body.getHeight()/2);
 		carterpillar.setColor(color.r, color.g, color.b);
 		canon.setColor(color.r, color.g, color.b);
-		setColor(color.r, color.g, color.b);
+		body.setColor(color.r, color.g, color.b);
 	
 		int heightHitbox = Math.max(carterpillar.getHeight(), body.getHeight());
 		int widthHitbox = body.getWidth() + carterpillar.getWidth();
@@ -129,12 +129,6 @@ public class Tank {
 		this.back = back;
 	}
 	
-	protected void setColor(float r, float g, float b){
-			body.setColor(0, r, g, b);
-			body.setColor(1, r, g, b);
-			body.setColor(2, r, g, b);
-			body.setColor(3, r, g, b);
-	}
 	
 	public void setCoordinates(int x, int y) {
 		hitbox.setX(x);

@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.loader.PiecesLoader;
 import fr.sulivan.badasstank.network.NetworkException;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.states.Game;
@@ -47,6 +48,9 @@ public class BadassTank extends StateBasedGame
 			app.setTargetFrameRate(Configuration.FPS);
 			app.setShowFPS(false);
 			app.setFullscreen(false);
+			
+			PiecesLoader.loader().loadBodies();
+			
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();

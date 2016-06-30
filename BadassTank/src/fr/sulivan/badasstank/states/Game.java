@@ -25,6 +25,7 @@ import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
 import fr.sulivan.badasstank.mob.player.Player;
+import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
 
@@ -55,7 +56,7 @@ public class Game extends BasicGameState{
 		SpriteSheet sprites1 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
 		Animation animation1 = new Animation(sprites1, 0, 0, 2, 0,true, 100, true);
 		Carterpillar carterpillar1 = new Carterpillar(animation1, 1.5,3);
-		Image body1 = new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18);
+		Body body1 = new Body(new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18));
 		Canon canon1 = new Canon(new Image("resources/spritesheets/canons.png", new Color(255,0,255)).getSubImage(0, 0, 11, 17), new Image("resources/spritesheets/bullet.png", new Color(255,0,255)).getSubImage(0, 0, 8, 9), null, 3f, 100, 500);
 		player1 = new Player(carterpillar1, canon1, new Color(20,150,20), body1, "Sulivan");
 		
@@ -63,7 +64,7 @@ public class Game extends BasicGameState{
 		SpriteSheet sprites2 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
 		Animation animation2 = new Animation(sprites2, 0, 0, 2, 0,true, 100, true);
 		Carterpillar carterpillar2 = new Carterpillar(animation2, 1.5,3);
-		Image body2 = new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18);
+		Body body2 = new Body(new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18));
 		Canon canon2 = new Canon(new Image("resources/spritesheets/canons.png", new Color(255,0,255)).getSubImage(0, 0, 11, 17), new Image("resources/spritesheets/bullet.png", new Color(255,0,255)).getSubImage(0, 0, 8, 9), null, 3f, 100, 500);
 		player2 = new Player(carterpillar2, canon2, new Color(20,20,150), body2, "Joueur 2");
 		
