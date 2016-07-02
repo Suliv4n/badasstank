@@ -131,7 +131,6 @@ public class Hitbox {
 		float dAngle = (float) ((angle - currentAngle) % (Math.PI * 2));
 		for(Shape p : shapes){
 			setPolygons.add(p.transform(new Transform(Transform.createRotateTransform(dAngle, p.getCenterX(), p.getCenterY()))));
-			System.out.println(Math.toRadians(dAngle));
 		}
 		currentAngle += dAngle;
 		shapes = setPolygons;

@@ -6,8 +6,8 @@ import org.newdawn.slick.Graphics;
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.mob.tank.Tank;
 import fr.sulivan.badasstank.states.Game;
-import fr.sulivan.badasstank.util.BarUI;
 import fr.sulivan.badasstank.util.TypeBarre;
+import fr.sulivan.badasstank.util.gui.BarUI;
 
 public class HUD {
 	

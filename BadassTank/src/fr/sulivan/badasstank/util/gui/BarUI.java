@@ -1,8 +1,10 @@
-package fr.sulivan.badasstank.util;
+package fr.sulivan.badasstank.util.gui;
 
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+
+import fr.sulivan.badasstank.util.TypeBarre;
 
 
 

@@ -21,7 +21,6 @@ public class BulletDisplayer extends Displayer{
 	
 	public BulletDisplayer(Image image, ParticleSystem particles, int x1, int y1 , int x2, int y2, float speed, int range) {
 		super(x1, y1);
-		System.out.println(x1 + " " + y1);
 		double hypo = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 		double angle = Math.acos((x1-x2) / hypo);
 		if(image != null){

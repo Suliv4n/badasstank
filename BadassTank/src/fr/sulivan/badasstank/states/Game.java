@@ -29,6 +29,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
+import fr.sulivan.badasstank.util.gui.ColoredButtonGUI;
 
 public class Game extends BasicGameState{
 
@@ -48,10 +49,16 @@ public class Game extends BasicGameState{
 	
 	private HUD hud;
 	
+	private ColoredButtonGUI button;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		
+		button = new ColoredButtonGUI(Configuration.RESOURCES_FOLDER+"buttons/up.png", new Color(0,100,200));
+		button.setX(200);
+		button.setY(10);
+		button.setOnClick(() -> System.out.println("click"));
 		
 		/*
 		SpriteSheet sprites1 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
@@ -125,12 +132,16 @@ public class Game extends BasicGameState{
 		player2.getHitbox().draw(new Color(0.2f, 0.2f, 0.5f, 0.5f), g);
 		
 		hud.render(g);
+		
+		button.render();
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		Input in = container.getInput();
+		
+		button.update(container);
 		
 		mapX = Configuration.SCREEN_WIDTH / 2 - player1.getX();
 		mapY = Configuration.SCREEN_HEIGHT / 2 - player1.getY();
@@ -182,6 +193,7 @@ public class Game extends BasicGameState{
 		for(Displayer d : disposed){
 			displayers.remove(d);
 		}
+		
 		
 		hud.update();
 	}
