@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pieces>
+	<bodies>
+		<body id="standard">
+			<name>Standard</name>
+			<stats>
+				<stat>
+				</stat>
+			</stats>
+			<image index="0" >resources/spritesheets/bodies.png</image>
+		</body>
+		<body id="heavy">
+			<name>Heavy</name>
+			<stats>
+				<stat stat="armor">+1</stat>
+				<stat stat="speed">-1</stat>
+			</stats>
+			<image index="1" >resources/spritesheets/bodies.png</image>
+		</body>
+		<body id="light">
+			<name>Light</name>
+			<stats>
+				<stat stat="armor">-1</stat>
+				<stat stat="speed">+1</stat>
+			</stats>
+			<image index="2" >resources/spritesheets/bodies.png</image>
+		</body>
+	</bodies>
+	
+	
+	<carterpillars>
+		<carterpillar id="standard">
+			<name>Standard</name>
+			<speed>1.5</speed>
+			<rotation>3</rotation>
+			<image index="0" >resources/spritesheets/carterpillars.png</image>
+		</carterpillar>
+	</carterpillars>
+	
+	
+	<canons>
+		<canon id="standard">
+			<name>Standard</name>
+			<image index="0" center-x="5" center-y="11">resources/spritesheets/canons.png</image>
+			<bullet>
+				<image x="0" y="0" width="8" height="9">resources/spritesheets/bullet.png</image>
+				<speed>3.0</speed>
+				<cooldown>500</cooldown>
+				<range>100</range>
+			</bullet>
+		</canon>
+	</canons>
+
+</pieces>

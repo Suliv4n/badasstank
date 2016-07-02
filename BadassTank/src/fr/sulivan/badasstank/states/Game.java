@@ -21,6 +21,7 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.hud.HUD;
+import fr.sulivan.badasstank.loader.PiecesLoader;
 import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
@@ -52,20 +53,30 @@ public class Game extends BasicGameState{
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		
-
+		/*
 		SpriteSheet sprites1 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
 		Animation animation1 = new Animation(sprites1, 0, 0, 2, 0,true, 100, true);
 		Carterpillar carterpillar1 = new Carterpillar(animation1, 1.5,3);
 		Body body1 = new Body(new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18));
 		Canon canon1 = new Canon(new Image("resources/spritesheets/canons.png", new Color(255,0,255)).getSubImage(0, 0, 11, 17), new Image("resources/spritesheets/bullet.png", new Color(255,0,255)).getSubImage(0, 0, 8, 9), null, 3f, 100, 500);
+		*/
+		Carterpillar carterpillar1 = PiecesLoader.loader().loadCarterpillars().get(0);
+		Canon canon1 = PiecesLoader.loader().loadCanons().get(0);
+		Body body1 = PiecesLoader.loader().loadBodies().get(0);
 		player1 = new Player(carterpillar1, canon1, new Color(20,150,20), body1, "Sulivan");
 		
 		
+		/*
 		SpriteSheet sprites2 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
 		Animation animation2 = new Animation(sprites2, 0, 0, 2, 0,true, 100, true);
 		Carterpillar carterpillar2 = new Carterpillar(animation2, 1.5,3);
 		Body body2 = new Body(new Image("resources/spritesheets/bodies.png").getSubImage(0, 0, 16, 18));
 		Canon canon2 = new Canon(new Image("resources/spritesheets/canons.png", new Color(255,0,255)).getSubImage(0, 0, 11, 17), new Image("resources/spritesheets/bullet.png", new Color(255,0,255)).getSubImage(0, 0, 8, 9), null, 3f, 100, 500);
+		*/
+		Carterpillar carterpillar2 = PiecesLoader.loader().loadCarterpillars().get(0);
+		Canon canon2 = PiecesLoader.loader().loadCanons().get(0);
+		Body body2 = PiecesLoader.loader().loadBodies().get(0);
+		player1 = new Player(carterpillar1, canon1, new Color(20,150,20), body1, "Sulivan");
 		player2 = new Player(carterpillar2, canon2, new Color(20,20,150), body2, "Joueur 2");
 		
 		player2.setCoordinates(100, 0);

@@ -101,7 +101,7 @@ public class Tank {
 	}
 	
 	public void setRotation(double angle){
-		body.setRotation((int)angle + 90 % 360);
+		body.setRotation(((int)angle + 90) % 360);
 		carterpillar.setRotation(angle);
 		rotation = angle % 360;
 		

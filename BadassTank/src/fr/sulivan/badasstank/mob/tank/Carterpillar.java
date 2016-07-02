@@ -2,14 +2,14 @@ package fr.sulivan.badasstank.mob.tank;
 
 import org.newdawn.slick.Animation;
 
-public class Carterpillar {
+public class Carterpillar extends TankPiece{
 	
 	private Animation animation;
-	private double rotation = 0;
 	private double speed;
 	private double speedRotation;
 	
-	public Carterpillar(Animation animation, double speed, double speedRotation){
+	public Carterpillar(String id, Animation animation, double speed, double speedRotation){
+		super(id);
 		this.animation = animation;
 		this.speed = speed;
 		this.speedRotation = speedRotation;

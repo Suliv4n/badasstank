@@ -6,7 +6,7 @@ import org.newdawn.slick.particles.ParticleSystem;
 import fr.sulivan.badasstank.mob.displayer.BulletDisplayer;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
 
-public class Canon {
+public class Canon extends TankPiece {
 
 	private Image image;
 	private Image bulletImage;
@@ -15,13 +15,20 @@ public class Canon {
 	
 	private int cooldown;
 	private int range;
+	
+	private int centerX;
+	private int centerY;
 
-	public Canon(Image image, Image bulletImage, ParticleSystem particles, float speedBullet, int range, int cooldown){
+	public Canon(String id, Image image, int centerX, int centerY, Image bulletImage, ParticleSystem particles, float speedBullet, int range, int cooldown){
+		super(id);
 		this.image = image;
-		image.setCenterOfRotation(5, 11);
+		image.setCenterOfRotation(centerX, centerY);
 		this.bulletImage = bulletImage;
 		this.particles = particles;
 		this.speedBullet = speedBullet;
+		
+		this.centerX = centerX;
+		this.centerY = centerY;
 		
 		this.range = range;
 		this.cooldown = cooldown;
@@ -29,7 +36,7 @@ public class Canon {
 	}
 	
 	protected void render(int x, int y){
-		image.draw(x - 5, y - 11);
+		image.draw(x - centerX, y - centerY);
 	}
 	
 	public void setRotation(int x1, int y1, int x2, int y2){

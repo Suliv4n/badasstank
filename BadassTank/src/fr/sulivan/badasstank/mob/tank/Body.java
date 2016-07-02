@@ -2,15 +2,16 @@ package fr.sulivan.badasstank.mob.tank;
 
 import org.newdawn.slick.Image;
 
-public class Body {
+public class Body extends TankPiece{
 	private Image image;
 	
-	public Body(Image image){
+	public Body(String id, Image image){
+		super(id);
 		this.image = image;
 	}
 
 	public void setRotation(float angle) {
-		image.rotate(angle);
+		image.setRotation(angle);
 	}
 
 	public int getWidth() {
@@ -21,7 +22,7 @@ public class Body {
 	}
 
 	public void setCenterOfRotation(int x, int y) {
-		image.setCenterOfRotation(getWidth() / 2, getHeight()/2);
+		image.setCenterOfRotation(x, y);
 	}
 	
 	public void drawCentered(int x, int y){

@@ -48,9 +48,6 @@ public class BadassTank extends StateBasedGame
 			app.setTargetFrameRate(Configuration.FPS);
 			app.setShowFPS(false);
 			app.setFullscreen(false);
-			
-			PiecesLoader.loader().loadBodies();
-			
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
