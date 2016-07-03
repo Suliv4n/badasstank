@@ -7,8 +7,10 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class ColoredButtonGUI {
+	public static final Color DEFAULT_DISABLE_COLOR = new Color(100,100,100);
 	private Image image;
 	private Color color;
+	private Color disableColor = DEFAULT_DISABLE_COLOR;
 	
 	private int x = 0;
 	private int y = 0;
@@ -16,8 +18,8 @@ public class ColoredButtonGUI {
 	private boolean enabled = true;
 	private boolean mouseover;
 
-	
 	private Runnable onClick;
+
 	
 	public ColoredButtonGUI(Image image, Color color){
 		this.image = image;
@@ -38,17 +40,24 @@ public class ColoredButtonGUI {
 		image.setColor(Image.TOP_RIGHT, color.r, color.g, color.b);
 	}
 
-	private void setActiveColor(boolean active){
+	private void setActiveColor(){
+		boolean active = enabled && mouseover;
 		
-		Color color = this.color;
-		if(active){
-			color = this.color.brighter(0.2f);
+		Color buttonColor = this.color;
+		if(enabled){
+			buttonColor = color;
+			if(active){
+				buttonColor = this.color.brighter(0.2f);
+			}
+		}
+		else{
+			buttonColor = disableColor;
 		}
 		
-		image.setColor(Image.BOTTOM_LEFT, color.r, color.g, color.b);
-		image.setColor(Image.BOTTOM_RIGHT, color.r, color.g, color.b);
-		image.setColor(Image.TOP_LEFT, color.r, color.g, color.b);
-		image.setColor(Image.TOP_RIGHT, color.r, color.g, color.b);
+		image.setColor(Image.BOTTOM_LEFT, buttonColor.r, buttonColor.g, buttonColor.b);
+		image.setColor(Image.BOTTOM_RIGHT, buttonColor.r, buttonColor.g, buttonColor.b);
+		image.setColor(Image.TOP_LEFT, buttonColor.r, buttonColor.g, buttonColor.b);
+		image.setColor(Image.TOP_RIGHT, buttonColor.r, buttonColor.g, buttonColor.b);
 	}
 	
 	public void setX(int x){
@@ -66,7 +75,7 @@ public class ColoredButtonGUI {
 		mouseover = mouseX > x && mouseX < x + image.getWidth();
 		mouseover &= mouseY > y && mouseY < y + image.getHeight();
 		
-		setActiveColor(mouseover);
+		setActiveColor();
 
 		
 		if(mouseover && enabled && container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)){
@@ -84,5 +93,16 @@ public class ColoredButtonGUI {
 	public void setOnClick(Runnable action){
 		onClick = action;
 	}
+
+	public int getWidth() {
+		return image.getWidth();
+	}
 	
+	public int getHeight() {
+		return image.getHeight();
+	}
+
+	public void setEnabled(boolean enabled){
+		this.enabled = enabled;
+	}
 }

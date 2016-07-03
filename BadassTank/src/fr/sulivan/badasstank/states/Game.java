@@ -29,7 +29,9 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
+import fr.sulivan.badasstank.util.gui.CarrousselListGUI;
 import fr.sulivan.badasstank.util.gui.ColoredButtonGUI;
+import fr.sulivan.badasstank.util.gui.Renderable;
 
 public class Game extends BasicGameState{
 
@@ -49,16 +51,34 @@ public class Game extends BasicGameState{
 	
 	private HUD hud;
 	
-	private ColoredButtonGUI button;
+	//private ColoredButtonGUI button;
+	private CarrousselListGUI<Body> bodiesList;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		
-		button = new ColoredButtonGUI(Configuration.RESOURCES_FOLDER+"buttons/up.png", new Color(0,100,200));
-		button.setX(200);
-		button.setY(10);
-		button.setOnClick(() -> System.out.println("click"));
+		
+		bodiesList = new CarrousselListGUI<Body>(
+				new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
+				new Color(0,100,200), 
+				30, 30, 50);
+		
+		bodiesList.setElements(PiecesLoader.loader().loadBodies());
+		
+		bodiesList.setX(200);
+		bodiesList.setY(10);
+		
+		bodiesList.setElementRenderer(new Renderable<Body>() {
+			@Override
+			public void render(Graphics g, int x, int y, int index, Body element){
+				int displayedX = x + 15;
+				int displayedY = y + 15;
+				
+				element.drawCentered(displayedX, displayedY);
+				
+			}
+		});
 		
 		/*
 		SpriteSheet sprites1 = new SpriteSheet("resources/spritesheets/carterpillars.png", 7 ,23 ,new Color(255,0,255));
@@ -133,7 +153,7 @@ public class Game extends BasicGameState{
 		
 		hud.render(g);
 		
-		button.render();
+		bodiesList.render(g);
 	}
 
 	@Override
@@ -141,7 +161,7 @@ public class Game extends BasicGameState{
 			throws SlickException {
 		Input in = container.getInput();
 		
-		button.update(container);
+		bodiesList.update(container, delta);
 		
 		mapX = Configuration.SCREEN_WIDTH / 2 - player1.getX();
 		mapY = Configuration.SCREEN_HEIGHT / 2 - player1.getY();
