@@ -25,10 +25,13 @@ public class TankBuilding extends BasicGameState{
 	
 	private Tank tank;
 	
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		
+
+
 		int x = 20;
 		int y = 20;
 		bodiesList = new CarrousselListGUI<Body>(

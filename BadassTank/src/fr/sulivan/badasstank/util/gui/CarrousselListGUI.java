@@ -115,8 +115,8 @@ public class CarrousselListGUI<T> {
 	}
 
 	public void render(Graphics g){
-		next.render();
-		previous.render();
+		next.render(g);
+		previous.render(g);
 		int clipHeight = getHeight() - previous.getHeight() - next.getHeight();
 		g.setClip(new Rectangle(x, y + previous.getHeight(), getWidth(), clipHeight)); 
 
