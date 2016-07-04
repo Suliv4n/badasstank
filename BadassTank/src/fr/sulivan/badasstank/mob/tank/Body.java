@@ -2,7 +2,7 @@ package fr.sulivan.badasstank.mob.tank;
 
 import org.newdawn.slick.Image;
 
-public class Body extends TankPiece{
+public class Body extends TankPiece implements Cloneable{
 	private Image image;
 	
 	public Body(String id, Image image){
@@ -29,10 +29,23 @@ public class Body extends TankPiece{
 		image.drawCentered(x, y);
 	}
 	
-	protected void setColor(float r, float g, float b){
+	public void setColor(float r, float g, float b){
 		image.setColor(0, r, g, b);
 		image.setColor(1, r, g, b);
 		image.setColor(2, r, g, b);
 		image.setColor(3, r, g, b);
+	}
+	
+	@Override
+	public Object clone(){
+		Body clone = null;
+		try {
+			clone = (Body) super.clone();
+			clone.image = this.image.copy();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		return clone;
 	}
 }

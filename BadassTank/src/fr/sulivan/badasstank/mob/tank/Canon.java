@@ -6,7 +6,7 @@ import org.newdawn.slick.particles.ParticleSystem;
 import fr.sulivan.badasstank.mob.displayer.BulletDisplayer;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
 
-public class Canon extends TankPiece {
+public class Canon extends TankPiece implements Cloneable {
 
 	private Image image;
 	private Image bulletImage;
@@ -35,7 +35,7 @@ public class Canon extends TankPiece {
 				
 	}
 	
-	protected void render(int x, int y){
+	public void render(int x, int y){
 		image.draw(x - centerX, y - centerY);
 	}
 	
@@ -52,7 +52,7 @@ public class Canon extends TankPiece {
 		image.setRotation(((int)angle + 90) % 360);
 	}
 	
-	protected void setColor(float r, float g, float b){
+	public void setColor(float r, float g, float b){
 		image.setColor(0, r, g, b);
 		image.setColor(1, r, g, b);
 		image.setColor(2, r, g, b);
@@ -74,5 +74,22 @@ public class Canon extends TankPiece {
 
 	public float getSpeedBullet() {
 		return speedBullet;
+	}
+
+	public void drawCenter(int x, int y) {
+		image.drawCentered(x, y);
+	}
+	
+	@Override
+	public Object clone(){
+		Canon clone = null;
+		try {
+			clone = (Canon) super.clone();
+			clone.image = this.image.copy();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		return clone;
 	}
 }

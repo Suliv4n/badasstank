@@ -5,16 +5,16 @@ import org.newdawn.slick.Graphics;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.mob.tank.Tank;
-import fr.sulivan.badasstank.states.Game;
+import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.util.TypeBarre;
 import fr.sulivan.badasstank.util.gui.BarUI;
 
 public class HUD {
 	
-	private Game game;
+	private SandBox game;
 	private BarUI healthPoints;
 	
-	public HUD(Game game){
+	public HUD(SandBox game){
 		this.game = game;
 		healthPoints = new BarUI(Configuration.HEALTH_BAR_COLOR, Color.black, 100, 15, game.getPlayer().getHealth(), game.getPlayer().getMaximumHealth(), TypeBarre.LEFT_TO_RIGHT,true, Configuration.BORDER_COLOR);
 	}

@@ -1,7 +1,7 @@
 package fr.sulivan.badasstank.mob.displayer;
 
 import fr.sulivan.badasstank.hitbox.Hitbox;
-import fr.sulivan.badasstank.states.Game;
+import fr.sulivan.badasstank.states.SandBox;
 
 
 public abstract class Displayer {
@@ -20,7 +20,7 @@ public abstract class Displayer {
 	}
 	
 	public abstract void render(float f, float g);
-	public void update(int delta, Game game){
+	public void update(int delta, SandBox game){
 		time += delta;
 	}
 	

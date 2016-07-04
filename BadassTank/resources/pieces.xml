@@ -35,6 +35,12 @@
 			<rotation>3</rotation>
 			<image index="0" >resources/spritesheets/carterpillars.png</image>
 		</carterpillar>
+		<carterpillar id="reversed">
+			<name>Reversed</name>
+			<speed>1</speed>
+			<rotation>4</rotation>
+			<image index="1" >resources/spritesheets/carterpillars.png</image>
+		</carterpillar>
 	</carterpillars>
 	
 	

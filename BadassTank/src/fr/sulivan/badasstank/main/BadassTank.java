@@ -8,7 +8,8 @@ import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.loader.PiecesLoader;
 import fr.sulivan.badasstank.network.NetworkException;
 import fr.sulivan.badasstank.network.Server;
-import fr.sulivan.badasstank.states.Game;
+import fr.sulivan.badasstank.states.SandBox;
+import fr.sulivan.badasstank.states.TankBuilding;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -23,7 +24,9 @@ public class BadassTank extends StateBasedGame
 	/**/private static AppGameContainer app;/**/
    /**//**//**//**//**//**//**//**//**//**//**/
 
-	private Game game;
+	private SandBox game;
+	private TankBuilding tankBuilding;
+	
 	private static boolean fullScreen = true;
 
 	public BadassTank(String name) {
@@ -32,7 +35,10 @@ public class BadassTank extends StateBasedGame
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		game = new Game();
+		game = new SandBox();
+		tankBuilding = new TankBuilding();
+		
+		addState(tankBuilding);
 		addState(game);
 	}
 	

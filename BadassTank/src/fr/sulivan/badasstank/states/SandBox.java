@@ -33,7 +33,7 @@ import fr.sulivan.badasstank.util.gui.CarrousselListGUI;
 import fr.sulivan.badasstank.util.gui.ColoredButtonGUI;
 import fr.sulivan.badasstank.util.gui.Renderable;
 
-public class Game extends BasicGameState{
+public class SandBox extends BasicGameState{
 
 	
 	private Player player1;

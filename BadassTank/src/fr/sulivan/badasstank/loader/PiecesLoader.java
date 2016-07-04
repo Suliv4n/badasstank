@@ -94,9 +94,7 @@ public class PiecesLoader {
 			XMLElement XMLImage = element.getChildrenByName("image").get(0);
 			
 			SpriteSheet sprites = new SpriteSheet(getImage(XMLImage, 21, 23), 7 ,23);
-			Animation animation = new Animation(sprites, 0, 0, 2, 0,true, 100, true);
-
-			Carterpillar carterpillar = new Carterpillar(id, animation, speed, rotation);
+			Carterpillar carterpillar = new Carterpillar(id, sprites, speed, rotation);
 			
 			carterpillars.add(carterpillar);
 		}

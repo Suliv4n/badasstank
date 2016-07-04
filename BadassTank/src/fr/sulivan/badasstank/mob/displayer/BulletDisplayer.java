@@ -5,7 +5,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.particles.ParticleSystem;
 
 import fr.sulivan.badasstank.hitbox.Hitbox;
-import fr.sulivan.badasstank.states.Game;
+import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.util.PolygonFactory;
 
 
@@ -57,7 +57,7 @@ public class BulletDisplayer extends Displayer{
 	}
 	
 	@Override
-	public void update(int delta, Game game) {
+	public void update(int delta, SandBox game) {
 		super.update(delta, game);
 		if(particles != null){
 			particles.update(delta);

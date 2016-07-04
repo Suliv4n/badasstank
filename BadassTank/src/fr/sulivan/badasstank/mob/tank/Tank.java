@@ -100,6 +100,22 @@ public class Tank {
 		g.drawString(name, displayedX - name.length() * 10 / 2, displayedY - body.getHeight() * 2);
 	}
 	
+	public void render(int x, int y){
+		
+		double angle = Math.toRadians(90) - Math.toRadians(rotation);
+		double hypo = (double)body.getWidth() / 2.0 + (double)carterpillar.getWidth() / 2.0 - 2;
+		int xC1 = x - (int) (Math.cos(angle) * hypo);
+		int yC1 = x + (int) (Math.sin(angle) * hypo);
+		int xC2 = y + (int) (Math.cos(angle) * hypo);
+		int yC2 = y - (int) (Math.sin(angle) * hypo);
+		
+		carterpillar.render(xC1, yC1, moving);
+		carterpillar.render(xC2, yC2, moving);
+		body.drawCentered(x, y);
+		canon.render(x, y);
+		
+	}
+	
 	public void setRotation(double angle){
 		body.setRotation(((int)angle + 90) % 360);
 		carterpillar.setRotation(angle);

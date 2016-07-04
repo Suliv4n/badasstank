@@ -1,18 +1,25 @@
 package fr.sulivan.badasstank.mob.tank;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.SpriteSheet;
 
-public class Carterpillar extends TankPiece{
+public class Carterpillar extends TankPiece implements Cloneable{
 	
 	private Animation animation;
+	private SpriteSheet spritesheet;
 	private double speed;
 	private double speedRotation;
 	
-	public Carterpillar(String id, Animation animation, double speed, double speedRotation){
+	public Carterpillar(String id, SpriteSheet spritesheet, double speed, double speedRotation){
 		super(id);
-		this.animation = animation;
+		this.spritesheet = spritesheet;
+		buildAnimation();
 		this.speed = speed;
 		this.speedRotation = speedRotation;
+	}
+	
+	public void buildAnimation(){
+		animation = new Animation(spritesheet, 0, 0, 2, 0,true, 100, true);
 	}
 	
 	public int getWidth(){
@@ -23,7 +30,7 @@ public class Carterpillar extends TankPiece{
 		return animation.getHeight();
 	}
 	
-	protected void render(int x, int y, boolean moving){
+	public void render(int x, int y, boolean moving){
 		if(moving){
 			animation.draw(x - (float)((double)animation.getWidth()/2.0), (float) ((double) y - animation.getHeight()/2.0));
 		}
@@ -39,7 +46,7 @@ public class Carterpillar extends TankPiece{
 		}
 	}
 	
-	protected void setColor(float r, float g, float b){
+	public void setColor(float r, float g, float b){
 		for(int i = 0; i<animation.getFrameCount(); i++){
 			animation.getImage(i).setColor(0, r, g, b);
 			animation.getImage(i).setColor(1, r, g, b);
@@ -56,5 +63,19 @@ public class Carterpillar extends TankPiece{
 	public double getSpeedRotation()
 	{
 		return speedRotation;
+	}
+	
+	@Override
+	public Object clone(){
+		Carterpillar clone = null;
+		try {
+			clone = (Carterpillar) super.clone();
+			clone.spritesheet = new SpriteSheet(spritesheet.copy(), this.spritesheet.getWidth()/this.spritesheet.getHorizontalCount(), this.spritesheet.getHeight());
+			clone.buildAnimation();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		return clone;
 	}
 }
