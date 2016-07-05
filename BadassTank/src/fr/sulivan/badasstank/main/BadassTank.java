@@ -1,15 +1,9 @@
 package fr.sulivan.badasstank.main;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-
 import fr.sulivan.badasstank.config.Configuration;
-import fr.sulivan.badasstank.loader.PiecesLoader;
-import fr.sulivan.badasstank.network.NetworkException;
-import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.states.TankBuilding;
+import fr.sulivan.badasstank.states.TitleScreen;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -26,8 +20,9 @@ public class BadassTank extends StateBasedGame
 
 	private SandBox game;
 	private TankBuilding tankBuilding;
+	private TitleScreen titleScreen;
 	
-	private static boolean fullScreen = true;
+	private static boolean fullScreen = false;
 
 	public BadassTank(String name) {
 		super(name);
@@ -37,9 +32,13 @@ public class BadassTank extends StateBasedGame
 	public void initStatesList(GameContainer container) throws SlickException {
 		game = new SandBox();
 		tankBuilding = new TankBuilding();
+		titleScreen = new TitleScreen();
 		
-		addState(tankBuilding);
+		titleScreen.init(container, this);
+		addState(titleScreen);
 		addState(game);
+		addState(tankBuilding);
+		
 	}
 	
 	public static void toggleFullScreen() throws SlickException{
@@ -53,7 +52,7 @@ public class BadassTank extends StateBasedGame
 			app.setDisplayMode(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT, false);
 			app.setTargetFrameRate(Configuration.FPS);
 			app.setShowFPS(false);
-			app.setFullscreen(false);
+			app.setFullscreen(fullScreen);
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
