@@ -24,6 +24,7 @@ public class TexturedButtonGUI extends ButtonGUI{
 	
 	public void setBorder(int width, Color color){
 		border = width;
+		borderColor = color;
 	}
 	
 	@Override
