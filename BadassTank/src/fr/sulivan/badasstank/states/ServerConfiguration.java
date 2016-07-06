@@ -1,6 +1,9 @@
 package fr.sulivan.badasstank.states;
 
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,6 +15,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.util.gui.TexturedButtonGUI;
 
 public class ServerConfiguration extends BasicGameState{
@@ -33,6 +37,12 @@ public class ServerConfiguration extends BasicGameState{
 		textFieldAddress.setLocation(Configuration.SCREEN_WIDTH / 2 - textFieldAddress.getWidth() / 2, 
 									100);
 		textFieldAddress.setFocus(true);
+		try {
+			textFieldAddress.setText(InetAddress.getLocalHost().getHostAddress());
+			textFieldAddress.setCursorPos(textFieldAddress.getText().length());
+		} catch (UnknownHostException e) {
+			textFieldAddress.setText("");
+		}
 		
 		
 		goButton = new TexturedButtonGUI(new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"), 200, 30, "Go");
@@ -41,6 +51,13 @@ public class ServerConfiguration extends BasicGameState{
 		goButton.setX(Configuration.SCREEN_WIDTH / 2 - goButton.getWidth() / 2);
 		goButton.setY(150);
 		
+		goButton.setOnClick(() -> {
+			try {
+				BadassTank.game().host(textFieldAddress.getText());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 

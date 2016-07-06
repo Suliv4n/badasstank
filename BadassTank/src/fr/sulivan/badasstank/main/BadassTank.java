@@ -1,6 +1,12 @@
 package fr.sulivan.badasstank.main;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.network.NetworkException;
+import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.states.ID;
 import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.states.ServerConfiguration;
@@ -74,6 +80,24 @@ public class BadassTank extends StateBasedGame
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void host(String host) throws SlickException {
+		String hostname = host;
+		int port = Configuration.DEFAULT_PORT;
+		
+		if(hostname.matches("^[^:]+:[0-9]+$")){
+			String[] parts = hostname.split(":");
+			hostname = parts[0];
+			port = Integer.parseInt(parts[1]);
+		}
+		InetSocketAddress address = new InetSocketAddress(hostname, port);
+		try {
+			Server server = new Server(address.getAddress(), address.getPort());
+			server.start();
+		} catch (IOException | NetworkException e) {
+			throw new SlickException(e.getMessage(), e);
 		}
 	}
 

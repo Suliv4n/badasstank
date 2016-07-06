@@ -10,4 +10,5 @@ public class Configuration {
 	public static final Color BORDER_COLOR = new Color(150,150,150);
 	public static final String RESOURCES_FOLDER = "resources/";
 	public static final String PIECES_FILE = RESOURCES_FOLDER + "pieces.xml";
+	public static final int DEFAULT_PORT = 1337;
 }
