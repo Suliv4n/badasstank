@@ -1,12 +1,16 @@
 package fr.sulivan.badasstank.main;
 
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.states.ID;
 import fr.sulivan.badasstank.states.SandBox;
+import fr.sulivan.badasstank.states.ServerConfiguration;
 import fr.sulivan.badasstank.states.TankBuilding;
 import fr.sulivan.badasstank.states.TitleScreen;
 
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -18,27 +22,40 @@ public class BadassTank extends StateBasedGame
 	/**/private static AppGameContainer app;/**/
    /**//**//**//**//**//**//**//**//**//**//**/
 
-	private SandBox game;
+	private SandBox sandbox;
 	private TankBuilding tankBuilding;
 	private TitleScreen titleScreen;
+	private ServerConfiguration serverConfiguration;
 	
 	private static boolean fullScreen = false;
+	private static BadassTank game;
 
-	public BadassTank(String name) {
+	private BadassTank(String name) {
 		super(name);
 	}
-
+	
+	public static BadassTank game() {
+		return game;
+	}
+	
+	public void launchGame(){
+		
+	}
+	
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		game = new SandBox();
+		container.setMouseCursor(new Image(Configuration.RESOURCES_FOLDER+"mouse/cursors.png", new Color(255,0,255)).getSubImage(0,0,13,13), 0, 0);
+		
+		sandbox = new SandBox();
 		tankBuilding = new TankBuilding();
 		titleScreen = new TitleScreen();
+		serverConfiguration = new ServerConfiguration();
 		
 		titleScreen.init(container, this);
 		addState(titleScreen);
-		addState(game);
+		addState(sandbox);
 		addState(tankBuilding);
-		
+		addState(serverConfiguration);
 	}
 	
 	public static void toggleFullScreen() throws SlickException{
@@ -48,7 +65,8 @@ public class BadassTank extends StateBasedGame
 	
 	public static void main(String[] args){
 		try {
-			app = new AppGameContainer(new BadassTank("Super Badass Tank"));
+			game = new BadassTank("Super Badass Tank");
+			app = new AppGameContainer(game);
 			app.setDisplayMode(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT, false);
 			app.setTargetFrameRate(Configuration.FPS);
 			app.setShowFPS(false);

@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -29,9 +30,18 @@ public class TitleScreen extends BasicGameState{
 		buttonHost = new TexturedButtonGUI(new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"), 200, 30, "Héberger");
 		buttonHost.setTextureMouseOver(new Image(Configuration.RESOURCES_FOLDER+"textures/yandb_mouseover.png"));
 		buttonHost.setBorder(2, Color.white);
-		buttonHost.setX(Configuration.SCREEN_WIDTH / 2 - buttonJoin.getWidth() / 2);
+		buttonHost.setX(Configuration.SCREEN_WIDTH / 2 - buttonHost.getWidth() / 2);
 		buttonHost.setY(150);
+		
+		buttonHost.setOnClick(() -> {
+			game.enterState(ID.SERVER_CONFIGURATION);
+		});
 
+	}
+	
+	@Override
+	public void leave(GameContainer container, StateBasedGame game){
+		container.getInput().clearMousePressedRecord();
 	}
 	
 	@Override
@@ -45,10 +55,8 @@ public class TitleScreen extends BasicGameState{
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		
 		buttonJoin.update(container);
 		buttonHost.update(container);
-		
 	}
 	@Override
 	public int getID() {
