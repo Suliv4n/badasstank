@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.network.NetworkException;
 import fr.sulivan.badasstank.network.Server;
+import fr.sulivan.badasstank.states.GameRoom;
 import fr.sulivan.badasstank.states.ID;
 import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.states.ServerConfiguration;
@@ -32,6 +33,7 @@ public class BadassTank extends StateBasedGame
 	private TankBuilding tankBuilding;
 	private TitleScreen titleScreen;
 	private ServerConfiguration serverConfiguration;
+	private GameRoom gameRoom;
 	
 	private static boolean fullScreen = false;
 	private static BadassTank game;
@@ -50,18 +52,20 @@ public class BadassTank extends StateBasedGame
 	
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		container.setMouseCursor(new Image(Configuration.RESOURCES_FOLDER+"mouse/cursors.png", new Color(255,0,255)).getSubImage(0,0,13,13), 0, 0);
+		container.setMouseCursor(new Image(Configuration.RESOURCES_FOLDER+"mouse/cursors.png", new Color(255,0,255)).getSubImage(0,0,13,13), 7, 7);
 		
 		sandbox = new SandBox();
 		tankBuilding = new TankBuilding();
 		titleScreen = new TitleScreen();
 		serverConfiguration = new ServerConfiguration();
-		
-		titleScreen.init(container, this);
+		gameRoom = new GameRoom();
+		addState(titleScreen);
+		addState(sandbox);
 		addState(titleScreen);
 		addState(sandbox);
 		addState(tankBuilding);
 		addState(serverConfiguration);
+		addState(gameRoom);
 	}
 	
 	public static void toggleFullScreen() throws SlickException{
@@ -95,6 +99,8 @@ public class BadassTank extends StateBasedGame
 		InetSocketAddress address = new InetSocketAddress(hostname, port);
 		try {
 			Server server = new Server(address.getAddress(), address.getPort());
+			gameRoom.setHosting(true);
+			game.enterState(ID.GAME_ROOM);
 			server.start();
 		} catch (IOException | NetworkException e) {
 			throw new SlickException(e.getMessage(), e);

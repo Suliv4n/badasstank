@@ -5,4 +5,5 @@ public class ID {
 	public static final int  TANK_BUILDING = 2;
 	public static final int  TITLE_SCREEN = 3;
 	public static final int  SERVER_CONFIGURATION = 4;
+	public static final int  GAME_ROOM = 5;
 }

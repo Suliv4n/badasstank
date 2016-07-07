@@ -105,8 +105,8 @@ public class Tank {
 		double angle = Math.toRadians(90) - Math.toRadians(rotation);
 		double hypo = (double)body.getWidth() / 2.0 + (double)carterpillar.getWidth() / 2.0 - 2;
 		int xC1 = x - (int) (Math.cos(angle) * hypo);
-		int yC1 = x + (int) (Math.sin(angle) * hypo);
-		int xC2 = y + (int) (Math.cos(angle) * hypo);
+		int yC1 = y + (int) (Math.sin(angle) * hypo);
+		int xC2 = x + (int) (Math.cos(angle) * hypo);
 		int yC2 = y - (int) (Math.sin(angle) * hypo);
 		
 		carterpillar.render(xC1, yC1, moving);
@@ -241,8 +241,20 @@ public class Tank {
 	}
 	
 	public int getMaximumHealth(){
-		//@todo à compléter
+		// TODO à compléter
 		return maximumBaseHealth;
 	}
 
+	
+	public void setBody(Body body) {
+		this.body = body;
+	}
+	
+	public void setCanon(Canon canon) {
+		this.canon = canon;
+	}
+
+	public void setCartepillar(Carterpillar cartepillar) {
+		this.carterpillar = cartepillar;
+	}
 }
