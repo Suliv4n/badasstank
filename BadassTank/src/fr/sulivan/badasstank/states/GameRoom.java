@@ -64,6 +64,10 @@ public class GameRoom extends BasicGameState{
 		});
 		x+=bodies.getWidth();
 		
+		bodies.setOnChange(() -> {
+			players.get(currentPlayerPosition).setBody((Body)bodies.getElement().clone());
+		});
+		
 		canons = new CarrousselListGUI<Canon>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
@@ -83,6 +87,10 @@ public class GameRoom extends BasicGameState{
 		});
 		x+=canons.getWidth();
 		
+		canons.setOnChange(() -> {
+			players.get(currentPlayerPosition).setCanon((Canon)canons.getElement().clone());
+		});
+		
 		carterpillars = new CarrousselListGUI<Carterpillar>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
@@ -99,6 +107,10 @@ public class GameRoom extends BasicGameState{
 				
 				element.render(displayedX, displayedY, false);
 			}
+		});
+		
+		carterpillars.setOnChange(() -> {
+			players.get(currentPlayerPosition).setCartepillar((Carterpillar)carterpillars.getElement().clone());
 		});
 		
 		Player player = new Player((Carterpillar)carterpillars.getElement().clone(), (Canon)canons.getElement().clone(), Color.white, (Body)bodies.getElement().clone(), "Unnamed");
@@ -124,7 +136,6 @@ public class GameRoom extends BasicGameState{
 		g.drawLine(0, 32, Configuration.SCREEN_WIDTH, 32);
 		
 		int boxDimension = (Configuration.SCREEN_HEIGHT - headerHeight) / boxNumberByColumn;
-		System.out.println(boxDimension);
 		
 		g.drawLine(boxDimension+1, headerHeight, boxDimension+1, Configuration.SCREEN_HEIGHT);
 		g.drawLine(boxDimension+2, headerHeight, boxDimension+2, Configuration.SCREEN_HEIGHT);
@@ -158,10 +169,6 @@ public class GameRoom extends BasicGameState{
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		
-		players.get(currentPlayerPosition).setBody((Body)bodies.getElement().clone());
-		players.get(currentPlayerPosition).setCartepillar((Carterpillar)carterpillars.getElement().clone());
-		players.get(currentPlayerPosition).setCanon((Canon)canons.getElement().clone());
 		
 		bodies.update(container, delta);
 		canons.update(container, delta);

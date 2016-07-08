@@ -2,6 +2,8 @@ package fr.sulivan.badasstank.util.gui;
 
 import java.util.ArrayList;
 
+import javax.jws.Oneway;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -31,7 +33,8 @@ public class CarrousselListGUI<T> {
 	private boolean slidingDown = false;
 	private float slideY = 0f;
 	private boolean cyclic = true;
-	
+
+	private Runnable onChange;
 	
 	public CarrousselListGUI(Image nextButton, Image previousButton, Color buttonColor, int elementWidth, int elementHeight, int innerHeight){
 		
@@ -100,7 +103,9 @@ public class CarrousselListGUI<T> {
 			slideY = 0.0f;
 			slidingDown = slidingUp = false;
 			
-			System.out.println(index);
+			if(onChange != null){
+				onChange.run();
+			}
 		}
 
 		if(!cyclic){
@@ -111,7 +116,6 @@ public class CarrousselListGUI<T> {
 	private void updateButtons() {
 		next.setEnabled(index > 0);
 		previous.setEnabled(index < elements.size() - 1);
-		System.out.println(index);
 	}
 
 	public void render(Graphics g){
@@ -153,6 +157,10 @@ public class CarrousselListGUI<T> {
 	
 	public int getIndex(){
 		return index;
+	}
+	
+	public void setOnChange(Runnable action){
+		onChange = action;
 	}
 	
 	public T getElement(){

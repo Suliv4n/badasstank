@@ -66,14 +66,11 @@ public class ServerConfiguration extends BasicGameState{
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 
-		container.getInput().clearMousePressedRecord();
-		if(container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)){
-			System.out.println("pressed");
-		}
 		textFieldAddress.render(container, g);
 		goButton.render(g);
-		
 	}
+	
+	
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
