@@ -29,7 +29,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
-import fr.sulivan.badasstank.util.gui.CarrousselListGUI;
+import fr.sulivan.badasstank.util.gui.CarouselListGUI;
 import fr.sulivan.badasstank.util.gui.ColoredButtonGUI;
 import fr.sulivan.badasstank.util.gui.Renderable;
 
@@ -52,14 +52,14 @@ public class SandBox extends BasicGameState{
 	private HUD hud;
 	
 	//private ColoredButtonGUI button;
-	private CarrousselListGUI<Body> bodiesList;
+	private CarouselListGUI<Body> bodiesList;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		
 		
-		bodiesList = new CarrousselListGUI<Body>(
+		bodiesList = new CarouselListGUI<Body>(
 				new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);

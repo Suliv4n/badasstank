@@ -14,14 +14,14 @@ import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
 import fr.sulivan.badasstank.mob.tank.Tank;
-import fr.sulivan.badasstank.util.gui.CarrousselListGUI;
+import fr.sulivan.badasstank.util.gui.CarouselListGUI;
 import fr.sulivan.badasstank.util.gui.Renderable;
 
 public class TankBuilding extends BasicGameState{
 
-	private CarrousselListGUI<Body> bodiesList;
-	private CarrousselListGUI<Carterpillar> carterpillarsList;
-	private CarrousselListGUI<Canon> canonsList;
+	private CarouselListGUI<Body> bodiesList;
+	private CarouselListGUI<Carterpillar> carterpillarsList;
+	private CarouselListGUI<Canon> canonsList;
 	
 	private Tank tank;
 	
@@ -34,7 +34,7 @@ public class TankBuilding extends BasicGameState{
 
 		int x = 20;
 		int y = 20;
-		bodiesList = new CarrousselListGUI<Body>(
+		bodiesList = new CarouselListGUI<Body>(
 				new Image(Configuration.RESOURCES_FOLDER + "buttons/down.png"), 
 				new Image(Configuration.RESOURCES_FOLDER + "buttons/up.png"), 
 				new Color(50, 180, 20), 
@@ -54,7 +54,7 @@ public class TankBuilding extends BasicGameState{
 		bodiesList.setY(y);
 		bodiesList.setElements(PiecesLoader.loader().loadBodies());
 		
-		carterpillarsList = new CarrousselListGUI<Carterpillar>(
+		carterpillarsList = new CarouselListGUI<Carterpillar>(
 				new Image(Configuration.RESOURCES_FOLDER + "buttons/down.png"), 
 				new Image(Configuration.RESOURCES_FOLDER + "buttons/up.png"), 
 				new Color(50, 180, 20), 
@@ -75,7 +75,7 @@ public class TankBuilding extends BasicGameState{
 		carterpillarsList.setY(y);
 		carterpillarsList.setElements(PiecesLoader.loader().loadCarterpillars());
 		
-		canonsList = new CarrousselListGUI<Canon>(
+		canonsList = new CarouselListGUI<Canon>(
 				new Image(Configuration.RESOURCES_FOLDER + "buttons/down.png"), 
 				new Image(Configuration.RESOURCES_FOLDER + "buttons/up.png"), 
 				new Color(50, 180, 20), 

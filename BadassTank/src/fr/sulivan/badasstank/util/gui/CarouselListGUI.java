@@ -10,7 +10,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Rectangle;
 
-public class CarrousselListGUI<T> {
+public class CarouselListGUI<T> {
 	
 	public static final int SLIDING_DEFAULT_DURATION = 500;
 	
@@ -36,7 +36,7 @@ public class CarrousselListGUI<T> {
 
 	private Runnable onChange;
 	
-	public CarrousselListGUI(Image nextButton, Image previousButton, Color buttonColor, int elementWidth, int elementHeight, int innerHeight){
+	public CarouselListGUI(Image nextButton, Image previousButton, Color buttonColor, int elementWidth, int elementHeight, int innerHeight){
 		
 		elementRenderer = new Renderable<T>() {};
 		

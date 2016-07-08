@@ -17,7 +17,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
-import fr.sulivan.badasstank.util.gui.CarrousselListGUI;
+import fr.sulivan.badasstank.util.gui.CarouselListGUI;
 import fr.sulivan.badasstank.util.gui.Renderable;
 
 public class GameRoom extends BasicGameState{
@@ -30,9 +30,9 @@ public class GameRoom extends BasicGameState{
 	
 	private int currentPlayerPosition = 0;
 	
-	private CarrousselListGUI<Body> bodies;
-	private CarrousselListGUI<Carterpillar> carterpillars;
-	private CarrousselListGUI<Canon> canons;
+	private CarouselListGUI<Body> bodies;
+	private CarouselListGUI<Carterpillar> carterpillars;
+	private CarouselListGUI<Canon> canons;
 	
 	private boolean hosting = false;
 	
@@ -44,7 +44,7 @@ public class GameRoom extends BasicGameState{
 		int x=150;
 		int y=60;
 		
-		bodies = new CarrousselListGUI<Body>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
+		bodies = new CarouselListGUI<Body>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
 		
@@ -68,7 +68,7 @@ public class GameRoom extends BasicGameState{
 			players.get(currentPlayerPosition).setBody((Body)bodies.getElement().clone());
 		});
 		
-		canons = new CarrousselListGUI<Canon>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
+		canons = new CarouselListGUI<Canon>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
 		
@@ -91,7 +91,7 @@ public class GameRoom extends BasicGameState{
 			players.get(currentPlayerPosition).setCanon((Canon)canons.getElement().clone());
 		});
 		
-		carterpillars = new CarrousselListGUI<Carterpillar>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
+		carterpillars = new CarouselListGUI<Carterpillar>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
 		
