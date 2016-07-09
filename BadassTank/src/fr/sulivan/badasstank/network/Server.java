@@ -1,6 +1,8 @@
 package fr.sulivan.badasstank.network;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -8,15 +10,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Function;
 
-public class Server extends ServerSocket{
+
+public class Server extends NetworkPoint{
 
 	private HashMap<String, Socket> clients;
-	public boolean running = false;
+	private boolean running = false;
+	private ServerSocket server;
 	
 	public Server(InetAddress host, int port) throws IOException {
-		super(port, 64, host);
+		server = new ServerSocket(port, 64, host);
 		clients = new HashMap<String, Socket>();
 	}
 	
@@ -26,6 +29,7 @@ public class Server extends ServerSocket{
 				run();
 			}
 			catch(NetworkException e){
+				running = false;
 				System.err.println(e.getMessage());
 			}
 		});
@@ -38,29 +42,58 @@ public class Server extends ServerSocket{
 		running = true;
 		while(running){
 			try {
-				Socket newClient = accept();
+				Socket client = server.accept();
 				String key = UUID.randomUUID().toString();
+				clients.put(key, client);
 				
-				clients.put(key, newClient);
+
+				
+				new Thread(()->{
+					while(running && client.isConnected()){
+					    try {
+					    	BufferedReader in = new BufferedReader(
+					    		new InputStreamReader(client.getInputStream())
+					    	);
+					    	
+					    	String message = in.readLine();
+					    	Event event = Event.parse(message, client);
+					    	EventCallback callback = events.get(event.getName());
+					    	if(callback != null){
+					    		callback.call(event);
+					    	}
+					    	
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).run();
+				
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
 		}
 	}
 	
-	public void send(String message, String to) throws IOException{
-		Socket socket = clients.get(to);
+	public boolean send(String message, Socket socket){
 		
-		OutputStream outstream = socket .getOutputStream(); 
-		PrintWriter out = new PrintWriter(outstream);
+		OutputStream outstream;
+		try {
+			outstream = socket .getOutputStream();
+			PrintWriter out = new PrintWriter(outstream);
+			out.println(message);
+			return true;
+		} catch (IOException e) {
+			return false;
+		} 
 		
-		out.println(message);
+		
+		
 	}
 	
-	public void sendToAllExceptOne(String message, String except) throws IOException{
+	public void sendToAllExceptOne(String message, String except){
 		for(String key : clients.keySet()){
 			if(!key.equals(except)){
-				send(message, key);
+				send(message, clients.get(key));
 			}
 		}
 	}

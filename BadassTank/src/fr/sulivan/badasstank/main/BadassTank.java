@@ -99,7 +99,7 @@ public class BadassTank extends StateBasedGame
 		InetSocketAddress address = new InetSocketAddress(hostname, port);
 		try {
 			Server server = new Server(address.getAddress(), address.getPort());
-			gameRoom.setHosting(true);
+			gameRoom.setServer(server);
 			game.enterState(ID.GAME_ROOM);
 			server.start();
 		} catch (IOException | NetworkException e) {

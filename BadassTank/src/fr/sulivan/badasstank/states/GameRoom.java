@@ -17,6 +17,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
+import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
 import fr.sulivan.badasstank.util.gui.Renderable;
 
@@ -34,6 +35,7 @@ public class GameRoom extends BasicGameState{
 	private CarouselListGUI<Carterpillar> carterpillars;
 	private CarouselListGUI<Canon> canons;
 	
+	private Server server;
 	private boolean hosting = false;
 	
 	@Override
@@ -118,10 +120,7 @@ public class GameRoom extends BasicGameState{
 		players.put(currentPlayerPosition, player);
 	}
 
-	public void setHosting(boolean hosting){
-		this.hosting = hosting;
-	}
-	
+
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
@@ -154,12 +153,18 @@ public class GameRoom extends BasicGameState{
 			g.drawLine(Configuration.SCREEN_WIDTH - boxDimension, y+2, Configuration.SCREEN_WIDTH, y+2);
 		}
 		
+		int statY = 200;
+		g.drawLine(boxDimension+1, statY, Configuration.SCREEN_WIDTH - boxDimension-1, statY);
+		g.drawLine(boxDimension+1, statY+1, Configuration.SCREEN_WIDTH - boxDimension-1, statY+1);
+		
 		for(Integer position : players.keySet()){
 			int playerX = boxDimension / 2 - players.get(position).getWidth() / 2;
 			int playerY = headerHeight + boxDimension / 2 - players.get(position).getHeight() / 2;
 			
 			players.get(position).render(playerX, playerY);
 		}
+		
+		
 		
 		bodies.render(g);
 		canons.render(g);
@@ -180,6 +185,35 @@ public class GameRoom extends BasicGameState{
 		return ID.GAME_ROOM;
 	}
 
-	
-	
+	public void setServer(Server server) {
+		this.server = server;
+		
+		server.on("join", (e) -> {
+			int position = 0;
+			
+			boolean adding = true;
+			while(players.get(position) != null && position < boxNumberByColumn*2){
+				try {
+					players.put(position, new Player(PiecesLoader.loader().loadCarterpillars().get(0), PiecesLoader.loader().loadCanons().get(0), Color.white, PiecesLoader.loader().loadBodies().get(0), "Client"));
+					adding = true;
+				} catch (Exception ex) {
+					adding = false;
+				}
+			}
+			
+			if(adding){
+				if(!server.send("joinstatus status=0 massage=ok", e.getSource())){
+					players.remove(position);
+					return false;
+				}
+				return true;
+			}else{
+				return server.send("joinstatus status=1 massage=full", e.getSource());
+			}
+			
+		});
+		
+		this.hosting = true;
+	}
+
 }
