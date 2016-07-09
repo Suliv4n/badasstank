@@ -17,6 +17,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
+import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
 import fr.sulivan.badasstank.util.gui.Renderable;
@@ -36,6 +37,8 @@ public class GameRoom extends BasicGameState{
 	private CarouselListGUI<Canon> canons;
 	
 	private Server server;
+	private Client client;
+	
 	private boolean hosting = false;
 	
 	@Override
@@ -188,32 +191,59 @@ public class GameRoom extends BasicGameState{
 	public void setServer(Server server) {
 		this.server = server;
 		
+		//Set events
+		
+		//------JOIN---------
+		/*
+		 * When a clients ask to join the rooms.
+		 */
 		server.on("join", (e) -> {
 			int position = 0;
 			
 			boolean adding = true;
 			while(players.get(position) != null && position < boxNumberByColumn*2){
+				position++;
+			}
+			
+			System.out.println(position);
+			
+			adding = false;
+			if(position < boxNumberByColumn*2){
 				try {
 					players.put(position, new Player(PiecesLoader.loader().loadCarterpillars().get(0), PiecesLoader.loader().loadCanons().get(0), Color.white, PiecesLoader.loader().loadBodies().get(0), "Client"));
 					adding = true;
+					
 				} catch (Exception ex) {
 					adding = false;
 				}
 			}
 			
 			if(adding){
-				if(!server.send("joinstatus status=0 massage=ok", e.getSource())){
+				if(!server.send("joinstatus status=0 message=ok position="+position, e.getSource())){
 					players.remove(position);
 					return false;
 				}
 				return true;
 			}else{
-				return server.send("joinstatus status=1 massage=full", e.getSource());
+				return server.send("joinstatus status=1 message=full", e.getSource());
 			}
 			
 		});
 		
+		
+		
 		this.hosting = true;
+	}
+
+
+	public void setClient(Client client) {
+		this.client = client;
+		this.hosting = false;
+	}
+
+
+	public void setPosition(int position) {
+		currentPlayerPosition = position;
 	}
 
 }

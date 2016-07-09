@@ -27,6 +27,10 @@ public class TitleScreen extends BasicGameState{
 		buttonJoin.setX(Configuration.SCREEN_WIDTH / 2 - buttonJoin.getWidth() / 2);
 		buttonJoin.setY(100);
 		
+		buttonJoin.setOnClick(() -> {
+			game.enterState(ID.JOIN_CONFIGURATION);
+		});
+		
 		buttonHost = new TexturedButtonGUI(new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"), 200, 30, "Héberger");
 		buttonHost.setTextureMouseOver(new Image(Configuration.RESOURCES_FOLDER+"textures/yandb_mouseover.png"));
 		buttonHost.setBorder(2, Color.white);

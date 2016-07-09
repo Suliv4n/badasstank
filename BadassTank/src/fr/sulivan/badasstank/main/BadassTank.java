@@ -5,14 +5,17 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.NetworkException;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.states.GameRoom;
 import fr.sulivan.badasstank.states.ID;
+import fr.sulivan.badasstank.states.JoinConfiguration;
 import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.states.ServerConfiguration;
 import fr.sulivan.badasstank.states.TankBuilding;
 import fr.sulivan.badasstank.states.TitleScreen;
+import fr.sulivan.badasstank.util.Network;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
@@ -33,6 +36,7 @@ public class BadassTank extends StateBasedGame
 	private TankBuilding tankBuilding;
 	private TitleScreen titleScreen;
 	private ServerConfiguration serverConfiguration;
+	private JoinConfiguration joinConfiguration;
 	private GameRoom gameRoom;
 	
 	private static boolean fullScreen = false;
@@ -58,13 +62,15 @@ public class BadassTank extends StateBasedGame
 		tankBuilding = new TankBuilding();
 		titleScreen = new TitleScreen();
 		serverConfiguration = new ServerConfiguration();
+		joinConfiguration = new JoinConfiguration();
 		gameRoom = new GameRoom();
+		
 		addState(titleScreen);
 		addState(sandbox);
-		addState(titleScreen);
 		addState(sandbox);
 		addState(tankBuilding);
 		addState(serverConfiguration);
+		addState(joinConfiguration);
 		addState(gameRoom);
 	}
 	
@@ -88,21 +94,43 @@ public class BadassTank extends StateBasedGame
 	}
 
 	public void host(String host) throws SlickException {
-		String hostname = host;
-		int port = Configuration.DEFAULT_PORT;
-		
-		if(hostname.matches("^[^:]+:[0-9]+$")){
-			String[] parts = hostname.split(":");
-			hostname = parts[0];
-			port = Integer.parseInt(parts[1]);
-		}
-		InetSocketAddress address = new InetSocketAddress(hostname, port);
 		try {
+			InetSocketAddress address = Network.getSocketAddress(host, Configuration.DEFAULT_PORT);
 			Server server = new Server(address.getAddress(), address.getPort());
+			server.start();
 			gameRoom.setServer(server);
 			game.enterState(ID.GAME_ROOM);
-			server.start();
 		} catch (IOException | NetworkException e) {
+			//TODO envoyer message d'erreur au lieu de throw l'exception
+			throw new SlickException(e.getMessage(), e);
+		}
+	}
+
+	public void join(String host) throws SlickException {
+		try {
+			InetSocketAddress address = Network.getSocketAddress(host, Configuration.DEFAULT_PORT);
+			Client client = new Client(address.getHostName(), address.getPort());
+			client.listen();
+			client.send("join");
+			
+			client.on("joinstatus", (e) -> {
+				int status = e.getIntParameter("status");
+				if(status == 0){
+					int position = e.getIntParameter("position");
+					gameRoom.setPosition(position);
+					gameRoom.setClient(client);
+					game.enterState(ID.GAME_ROOM);
+					return true;
+				}
+				else{
+					client.close();
+				}
+				return false;
+			});
+			
+
+		} catch (IOException e) {
+			//TODO envoyer message d'erreur au lieu de throw l'exception
 			throw new SlickException(e.getMessage(), e);
 		}
 	}

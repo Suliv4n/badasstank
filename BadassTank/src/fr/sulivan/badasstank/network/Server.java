@@ -32,7 +32,7 @@ public class Server extends NetworkPoint{
 				running = false;
 				System.err.println(e.getMessage());
 			}
-		});
+		}).start();
 	}
 	
 	private void run() throws NetworkException{
@@ -46,16 +46,18 @@ public class Server extends NetworkPoint{
 				String key = UUID.randomUUID().toString();
 				clients.put(key, client);
 				
-
+				System.out.println("New Client");
 				
 				new Thread(()->{
+					
 					while(running && client.isConnected()){
 					    try {
 					    	BufferedReader in = new BufferedReader(
 					    		new InputStreamReader(client.getInputStream())
 					    	);
-					    	
+					    	System.out.println("wait for line");
 					    	String message = in.readLine();
+					    	System.out.println(message);
 					    	Event event = Event.parse(message, client);
 					    	EventCallback callback = events.get(event.getName());
 					    	if(callback != null){
@@ -66,7 +68,8 @@ public class Server extends NetworkPoint{
 							e.printStackTrace();
 						}
 					}
-				}).run();
+					System.out.println("fin");
+				}).start();
 				
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
@@ -81,6 +84,7 @@ public class Server extends NetworkPoint{
 			outstream = socket .getOutputStream();
 			PrintWriter out = new PrintWriter(outstream);
 			out.println(message);
+			System.out.println("Send to client : " + message);
 			return true;
 		} catch (IOException e) {
 			return false;

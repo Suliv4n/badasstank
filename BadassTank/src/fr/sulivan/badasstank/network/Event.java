@@ -47,4 +47,12 @@ public class Event {
 	public Socket getSource() {
 		return source;
 	}
+
+	public String getParameter(String name) {
+		return parameters.get(name);
+	}
+	
+	public int getIntParameter(String name) {
+		return Integer.parseInt(parameters.get(name));
+	}
 }
