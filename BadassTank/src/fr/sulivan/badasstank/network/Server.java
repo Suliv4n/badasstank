@@ -1,26 +1,21 @@
 package fr.sulivan.badasstank.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.UUID;
 
 
 public class Server extends NetworkPoint{
 
-	private HashMap<String, Socket> clients;
+	private HashMap<Socket, ServerClient> clients;
 	private boolean running = false;
 	private ServerSocket server;
 	
 	public Server(InetAddress host, int port) throws IOException {
 		server = new ServerSocket(port, 64, host);
-		clients = new HashMap<String, Socket>();
+		clients = new HashMap<Socket, ServerClient>();
 	}
 	
 	public void start() throws NetworkException{
@@ -42,30 +37,31 @@ public class Server extends NetworkPoint{
 		running = true;
 		while(running){
 			try {
-				Socket client = server.accept();
-				String key = UUID.randomUUID().toString();
-				clients.put(key, client);
+				Socket socket = server.accept();
 				
-				System.out.println("New Client");
+				ServerClient client = new ServerClient(socket);
+				clients.put(socket, client);
 				
+				/*int i=0;
+				while(i<1000){
+					send("TEST SEND "+ i +" TO CLIENT", socket);
+					i++;
+				}*/
 				new Thread(()->{
 					
-					while(running && client.isConnected()){
+					while(running && client.getSocket().isConnected()){
 					    try {
-					    	BufferedReader in = new BufferedReader(
-					    		new InputStreamReader(client.getInputStream())
-					    	);
 					    	System.out.println("wait for line");
-					    	String message = in.readLine();
+					    	String message = client.in.readLine();
 					    	System.out.println(message);
-					    	Event event = Event.parse(message, client);
+					    	Event event = Event.parse(message, client.getSocket());
 					    	EventCallback callback = events.get(event.getName());
 					    	if(callback != null){
 					    		callback.call(event);
 					    	}
 					    	
 						} catch (Exception e) {
-							e.printStackTrace();
+							//e.printStackTrace();
 						}
 					}
 					System.out.println("fin");
@@ -78,28 +74,23 @@ public class Server extends NetworkPoint{
 	}
 	
 	public boolean send(String message, Socket socket){
-		
-		OutputStream outstream;
-		try {
-			outstream = socket .getOutputStream();
-			PrintWriter out = new PrintWriter(outstream);
-			out.println(message);
-			System.out.println("Send to client : " + message);
-			return true;
-		} catch (IOException e) {
+		ServerClient client = clients.get(socket);
+		if(client == null){
 			return false;
-		} 
-		
-		
-		
+		}
+
+		client.out.println(message);
+		client.out.flush();
+		System.out.println("Send to client : " + message);
+		return true;
 	}
 	
 	public void sendToAllExceptOne(String message, String except){
-		for(String key : clients.keySet()){
+		/*for(String key : clients.keySet()){
 			if(!key.equals(except)){
-				send(message, clients.get(key));
+				send(message, clients.get(key).getSocket());
 			}
-		}
+		}*/
 	}
 	
 	public void stop(){

@@ -164,6 +164,8 @@ public class GameRoom extends BasicGameState{
 			int playerX = boxDimension / 2 - players.get(position).getWidth() / 2;
 			int playerY = headerHeight + boxDimension / 2 - players.get(position).getHeight() / 2;
 			
+			playerY += (position % boxNumberByColumn) * boxDimension;
+			
 			players.get(position).render(playerX, playerY);
 		}
 		
@@ -211,6 +213,7 @@ public class GameRoom extends BasicGameState{
 			if(position < boxNumberByColumn*2){
 				try {
 					players.put(position, new Player(PiecesLoader.loader().loadCarterpillars().get(0), PiecesLoader.loader().loadCanons().get(0), Color.white, PiecesLoader.loader().loadBodies().get(0), "Client"));
+					players.get(position).setRotation(90);
 					adding = true;
 					
 				} catch (Exception ex) {
@@ -218,7 +221,9 @@ public class GameRoom extends BasicGameState{
 				}
 			}
 			
+
 			if(adding){
+				System.out.println(e.getSource());
 				if(!server.send("joinstatus status=0 message=ok position="+position, e.getSource())){
 					players.remove(position);
 					return false;
@@ -243,7 +248,9 @@ public class GameRoom extends BasicGameState{
 
 
 	public void setPosition(int position) {
+		Player player = players.remove(currentPlayerPosition);
 		currentPlayerPosition = position;
+		players.put(currentPlayerPosition, player);
 	}
 
 }

@@ -10,22 +10,19 @@ import java.net.UnknownHostException;
 
 public class Client extends NetworkPoint{
 	private Socket socket;
+	private BufferedReader in;
+	private PrintWriter out;
 	
 	public Client(String host, int port) throws UnknownHostException, IOException{
 		socket = new Socket(host, port);
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		out = new PrintWriter(socket.getOutputStream());
 	}
 	
 	public boolean send(String message){
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-			System.out.println("Send to server : " + message );
-			pw.println(message);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
+		System.out.println("Send to server : " + message );
+		out.println(message);
+		out.flush();
 		return true;
 	}
 	
@@ -33,13 +30,11 @@ public class Client extends NetworkPoint{
 		new Thread(() -> {
 			while(socket.isConnected()){
 		    	try {
-					BufferedReader in = new BufferedReader(
-						new InputStreamReader(socket.getInputStream())
-					);
-					
 			    	String message = in.readLine();
+			    	System.out.println("Received from server : " + message);
 			    	Event event = Event.parse(message, socket);
 			    	EventCallback callback = events.get(event.getName());
+			    	
 			    	if(callback != null){
 			    		callback.call(event);
 			    	}
@@ -49,6 +44,7 @@ public class Client extends NetworkPoint{
 				}
 			}
 		}).start();
+
 	}
 
 	public void close() {

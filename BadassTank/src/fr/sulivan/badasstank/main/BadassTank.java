@@ -117,6 +117,7 @@ public class BadassTank extends StateBasedGame
 				int status = e.getIntParameter("status");
 				if(status == 0){
 					int position = e.getIntParameter("position");
+					System.out.println(position);
 					gameRoom.setPosition(position);
 					gameRoom.setClient(client);
 					game.enterState(ID.GAME_ROOM);
