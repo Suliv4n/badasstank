@@ -55,4 +55,8 @@ public class Event {
 	public int getIntParameter(String name) {
 		return Integer.parseInt(parameters.get(name));
 	}
+
+	public HashMap<String, String> getParameters() {
+		return parameters;
+	}
 }

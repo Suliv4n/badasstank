@@ -99,7 +99,7 @@ public class BadassTank extends StateBasedGame
 			InetSocketAddress address = Network.getSocketAddress(host, Configuration.DEFAULT_PORT);
 			Server server = new Server(address.getAddress(), address.getPort());
 			server.start();
-			gameRoom.setServer(server);
+			gameRoom.configureServer(server);
 			game.enterState(ID.GAME_ROOM);
 		} catch (IOException | NetworkException e) {
 			//TODO envoyer message d'erreur au lieu de throw l'exception
@@ -120,7 +120,7 @@ public class BadassTank extends StateBasedGame
 					int position = e.getIntParameter("position");
 					System.out.println(position);
 					gameRoom.setPosition(position);
-					gameRoom.setClient(client);
+					gameRoom.configureClient(client);
 					game.enterState(ID.GAME_ROOM);
 				}
 				else{

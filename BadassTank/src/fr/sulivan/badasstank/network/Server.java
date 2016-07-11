@@ -25,7 +25,6 @@ public class Server extends NetworkPoint{
 			}
 			catch(NetworkException e){
 				running = false;
-				System.err.println(e.getMessage());
 			}
 		}).start();
 	}
@@ -84,23 +83,7 @@ public class Server extends NetworkPoint{
 		send(message + " " + createQueryString(parameters), socket);
 	}
 	
-	private String createQueryString(HashMap<String, String> parameters) {
-		if(parameters == null){
-			return "";
-		}
-		
-		String query = "";
-		for(String key : parameters.keySet()){
-			String value = parameters.get(key);
-			if(value.contains(" ") || value.contains("\"")){
-				value = value.replaceAll("\"", "\\\"");
-				value = "\""+value+"\"";
-			}
-			query += key + "=" + value + " ";
-		}
-		
-		return query.substring(0, query.length()-1);
-	}
+
 
 	public boolean broadcast(String message, Socket except){
 		boolean res = true;
@@ -113,16 +96,16 @@ public class Server extends NetworkPoint{
 		return res;
 	}
 	
-	public void stop(){
-		running = false;
-	}
-
 	public boolean broadcast(String message, HashMap<String, String> parameters, Socket except) {
 		String event = message + " " + createQueryString(parameters);
 		return broadcast(event, except);
 	}
-
-
 	
-	
+	public void stop(){
+		running = false;
+	}
+
+	public void broadcast(String message) {
+		broadcast(message, null);
+	}
 }

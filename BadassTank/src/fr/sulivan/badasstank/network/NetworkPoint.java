@@ -19,4 +19,22 @@ public abstract class NetworkPoint {
 	}
 	
 
+	protected String createQueryString(HashMap<String, String> parameters) {
+		if(parameters == null){
+			return "";
+		}
+		
+		String query = "";
+		for(String key : parameters.keySet()){
+			String value = parameters.get(key);
+			if(value.contains(" ") || value.contains("\"")){
+				value = value.replaceAll("\"", "\\\"");
+				value = "\""+value+"\"";
+			}
+			query += key + "=" + value + " ";
+		}
+		
+		return query.substring(0, query.length()-1);
+	}
+	
 }

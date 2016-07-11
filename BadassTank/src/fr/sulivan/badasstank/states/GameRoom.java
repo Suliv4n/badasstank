@@ -3,6 +3,7 @@ package fr.sulivan.badasstank.states;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.XRandR.Screen;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -18,6 +19,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
+import fr.sulivan.badasstank.mob.tank.TankPiece;
 import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
@@ -42,7 +44,6 @@ public class GameRoom extends BasicGameState{
 	
 	private Server server;
 	private Client client;
-	
 	private boolean hosting = false;
 	
 	@Override
@@ -76,7 +77,14 @@ public class GameRoom extends BasicGameState{
 		x+=bodies.getWidth();
 		
 		bodies.setOnChange(() -> {
+			Body body = (Body)bodies.getElement().clone();
 			players.get(currentPlayerPosition).setBody((Body)bodies.getElement().clone());
+			if(hosting){
+				server.broadcast("setpiece position="+currentPlayerPosition+" piece=body id="+body.getId());
+			}
+			else{
+				client.send("setpiece position="+currentPlayerPosition+" piece=body id="+body.getId());
+			}
 		});
 		
 		canonsData = PiecesLoader.loader().loadCanons();
@@ -101,7 +109,14 @@ public class GameRoom extends BasicGameState{
 		x+=canons.getWidth();
 		
 		canons.setOnChange(() -> {
-			players.get(currentPlayerPosition).setCanon((Canon)canons.getElement().clone());
+			Canon canon = (Canon)canons.getElement().clone();
+			players.get(currentPlayerPosition).setCanon(canon);
+			if(hosting){
+				server.broadcast("setpiece position="+currentPlayerPosition+" piece=canon id="+canon.getId());
+			}
+			else{
+				client.send("setpiece position="+currentPlayerPosition+" piece=canon id="+canon.getId());
+			}
 		});
 		
 		carterpillarsData = PiecesLoader.loader().loadCarterpillars();
@@ -124,7 +139,14 @@ public class GameRoom extends BasicGameState{
 		});
 		
 		carterpillars.setOnChange(() -> {
-			players.get(currentPlayerPosition).setCartepillar((Carterpillar)carterpillars.getElement().clone());
+			Carterpillar cartepillar = (Carterpillar)carterpillars.getElement().clone();
+			players.get(currentPlayerPosition).setCartepillar(cartepillar);
+			if(hosting){
+				server.broadcast("setpiece position="+currentPlayerPosition+" piece=carterpillar id="+cartepillar.getId());
+			}
+			else{
+				client.send("setpiece position="+currentPlayerPosition+" piece=carterpillar id="+cartepillar.getId());
+			}
 		});
 		
 		Player player = new Player((Carterpillar)carterpillars.getElement().clone(), (Canon)canons.getElement().clone(), Color.white, (Body)bodies.getElement().clone(), "Unnamed");
@@ -136,6 +158,7 @@ public class GameRoom extends BasicGameState{
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
+		
 		g.clearWorldClip();
 		g.setColor(borderColor);
 
@@ -199,9 +222,8 @@ public class GameRoom extends BasicGameState{
 		return ID.GAME_ROOM;
 	}
 
-	public void setServer(Server server) {
+	public void configureServer(Server server) {
 		this.server = server;
-		
 		//Set events
 		
 		//------JOIN---------
@@ -262,13 +284,48 @@ public class GameRoom extends BasicGameState{
 			
 		});
 		
+		//------SETPIECE---------
+		/*
+		 * When a client set a piece of his tank
+		 */
+		server.on("setpiece", e -> {
+			String piece = e.getParameter("piece");
+			String id = e.getParameter("id");
+			int position = e.getIntParameter("position");
+			
+			if(piece.equals("body")){
+				players.get(position).setBody((Body) getBodyFromId(id).clone());
+			}
+			
+			if(piece.equals("carterpillar")){
+				players.get(position).setCartepillar((Carterpillar) getCarterpillarFromId(id).clone());
+			}
+			
+			if(piece.equals("canon")){
+				players.get(position).setCanon((Canon)getCanonFromId(id).clone());
+			}
+			
+			server.broadcast("setpiece", e.getParameters(), e.getSource());
+			
+		});
 		
 		
 		this.hosting = true;
 	}
+	
+	public Body getBodyFromId(String id){
+		return (Body)bodiesData.stream().filter(b -> b.getId().equals(id)).toArray()[0];
+	}
+	
+	public Carterpillar getCarterpillarFromId(String id){
+		return (Carterpillar)carterpillarsData.stream().filter(c -> c.getId().equals(id)).toArray()[0];
+	}
+	
+	public Canon getCanonFromId(String id){
+		return (Canon)canonsData.stream().filter(c -> c.getId().equals(id)).toArray()[0];
+	}
 
-
-	public void setClient(Client client) {
+	public void configureClient(Client client) {
 		this.client = client;
 		this.hosting = false;
 		
@@ -280,14 +337,33 @@ public class GameRoom extends BasicGameState{
 			int position = e.getIntParameter("position");
 			
 			Player addingPlayer = new Player(
-					(Carterpillar)carterpillarsData.stream().filter(c -> c.getId().equals(carterpillarId)).toArray()[0], 
-					(Canon)canonsData.stream().filter(c -> c.getId().equals(canonId)).toArray()[0], 
-					Color.white, 
-					(Body)bodiesData.stream().filter(b -> b.getId().equals(bodyId)).toArray()[0], 
+					getCarterpillarFromId(carterpillarId), 
+					getCanonFromId(canonId), 
+					Color.white,
+					getBodyFromId(bodyId), 
 					name);
 			addingPlayer.setRotation(90);
 			
 			players.put(position, addingPlayer);
+		});
+		
+		client.on("setpiece", e -> {
+			String piece = e.getParameter("piece");
+			String id = e.getParameter("id");
+			int position = e.getIntParameter("position");
+			
+			if(piece.equals("body")){
+				players.get(position).setBody((Body) getBodyFromId(id).clone());
+			}
+			
+			if(piece.equals("carterpillar")){
+				players.get(position).setCartepillar((Carterpillar) getCarterpillarFromId(id).clone());
+			}
+			
+			if(piece.equals("canon")){
+				players.get(position).setCanon((Canon)getCanonFromId(id).clone());
+			}
+			
 		});
 	}
 
