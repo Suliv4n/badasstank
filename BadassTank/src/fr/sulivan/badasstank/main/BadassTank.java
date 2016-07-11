@@ -121,12 +121,10 @@ public class BadassTank extends StateBasedGame
 					gameRoom.setPosition(position);
 					gameRoom.setClient(client);
 					game.enterState(ID.GAME_ROOM);
-					return true;
 				}
 				else{
 					client.close();
 				}
-				return false;
 			});
 			
 

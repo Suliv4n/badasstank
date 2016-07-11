@@ -2,5 +2,5 @@ package fr.sulivan.badasstank.network;
 
 @FunctionalInterface
 public interface EventCallback {
-	public boolean call(Event event);
+	public void call(Event event);
 }

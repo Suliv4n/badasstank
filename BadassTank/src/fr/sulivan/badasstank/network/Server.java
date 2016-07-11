@@ -85,6 +85,28 @@ public class Server extends NetworkPoint{
 		return true;
 	}
 	
+	public void send(String message, HashMap<String, String> parameters, Socket socket) {
+		send(message + " " + createQueryString(parameters), socket);
+	}
+	
+	private String createQueryString(HashMap<String, String> parameters) {
+		if(parameters == null){
+			return "";
+		}
+		
+		String query = "";
+		for(String key : parameters.keySet()){
+			String value = parameters.get(key);
+			if(value.contains(" ") || value.contains("\"")){
+				value = value.replaceAll("\"", "\\\"");
+				value = "\""+value+"\"";
+			}
+			query += key + "=" + value + " ";
+		}
+		
+		return query.substring(0, query.length()-1);
+	}
+
 	public void sendToAllExceptOne(String message, String except){
 		/*for(String key : clients.keySet()){
 			if(!key.equals(except)){
@@ -96,6 +118,8 @@ public class Server extends NetworkPoint{
 	public void stop(){
 		running = false;
 	}
+
+
 	
 	
 }

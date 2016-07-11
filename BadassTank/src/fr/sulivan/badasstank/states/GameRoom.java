@@ -1,5 +1,6 @@
 package fr.sulivan.badasstank.states;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.lwjgl.opengl.XRandR.Screen;
@@ -32,8 +33,11 @@ public class GameRoom extends BasicGameState{
 	
 	private int currentPlayerPosition = 0;
 	
+	private ArrayList<Body> bodiesData;
 	private CarouselListGUI<Body> bodies;
+	private ArrayList<Carterpillar> carterpillarsData;
 	private CarouselListGUI<Carterpillar> carterpillars;
+	private ArrayList<Canon> canonsData;
 	private CarouselListGUI<Canon> canons;
 	
 	private Server server;
@@ -49,11 +53,13 @@ public class GameRoom extends BasicGameState{
 		int x=150;
 		int y=60;
 		
+		bodiesData = PiecesLoader.loader().loadBodies();
+		
 		bodies = new CarouselListGUI<Body>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
 		
-		bodies.setElements(PiecesLoader.loader().loadBodies());
+		bodies.setElements(bodiesData);
 		bodies.setX(x);
 		bodies.setY(y);
 
@@ -73,11 +79,13 @@ public class GameRoom extends BasicGameState{
 			players.get(currentPlayerPosition).setBody((Body)bodies.getElement().clone());
 		});
 		
+		canonsData = PiecesLoader.loader().loadCanons();
+		
 		canons = new CarouselListGUI<Canon>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
 		
-		canons.setElements(PiecesLoader.loader().loadCanons());
+		canons.setElements(canonsData);
 		canons.setX(x);
 		canons.setY(y);
 
@@ -96,11 +104,12 @@ public class GameRoom extends BasicGameState{
 			players.get(currentPlayerPosition).setCanon((Canon)canons.getElement().clone());
 		});
 		
+		carterpillarsData = PiecesLoader.loader().loadCarterpillars();
 		carterpillars = new CarouselListGUI<Carterpillar>(new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
 				30, 30, 50);
 		
-		carterpillars.setElements(PiecesLoader.loader().loadCarterpillars());
+		carterpillars.setElements(carterpillarsData);
 		carterpillars.setX(x);
 		carterpillars.setY(y);
 
@@ -224,13 +233,28 @@ public class GameRoom extends BasicGameState{
 
 			if(adding){
 				System.out.println(e.getSource());
-				if(!server.send("joinstatus status=0 message=ok position="+position, e.getSource())){
-					players.remove(position);
-					return false;
+				if(server.send("joinstatus status=0 message=ok position="+position, e.getSource())){
+					for(Integer pos : players.keySet()){
+	
+						Player p = players.get(pos);
+						HashMap<String, String> parameters = new HashMap<String, String>();
+						
+						parameters.put("position", String.valueOf(pos));
+						parameters.put("carterpillar", p.getCartillarId());
+						parameters.put("canon", p.getCanonId());
+						parameters.put("body", p.getCanonId());
+						parameters.put("name", p.getName());
+						
+						if(pos != position){	
+							server.send("addplayer", parameters, e.getSource());
+						}
+					}
 				}
-				return true;
+				else{
+					players.remove(position);
+				}
 			}else{
-				return server.send("joinstatus status=1 message=full", e.getSource());
+				server.send("joinstatus status=1 message=full", e.getSource());
 			}
 			
 		});
@@ -244,6 +268,24 @@ public class GameRoom extends BasicGameState{
 	public void setClient(Client client) {
 		this.client = client;
 		this.hosting = false;
+		
+		client.on("addplayer",e -> {
+			String carterpillarId = e.getParameter("carterpillar");
+			String bodyId = e.getParameter("body");
+			String canonId = e.getParameter("canon");
+			String name = e.getParameter("name");
+			int position = e.getIntParameter("position");
+			
+			Player addingPlayer = new Player(
+					(Carterpillar)carterpillarsData.stream().filter(c -> c.getId().equals(carterpillarId)).toArray()[0], 
+					(Canon)canonsData.stream().filter(c -> c.getId().equals(canonId)).toArray()[0], 
+					Color.white, 
+					(Body)bodiesData.stream().filter(b -> b.getId().equals(bodyId)).toArray()[0], 
+					name);
+			addingPlayer.setRotation(90);
+			
+			players.put(position, addingPlayer);
+		});
 	}
 
 

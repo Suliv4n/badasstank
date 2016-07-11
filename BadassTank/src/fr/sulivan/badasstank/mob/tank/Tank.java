@@ -257,4 +257,20 @@ public class Tank {
 	public void setCartepillar(Carterpillar cartepillar) {
 		this.carterpillar = cartepillar;
 	}
+	
+	public String getCartillarId() {
+		return carterpillar.getId();
+	}
+	
+	public String getBodyId() {
+		return body.getId();
+	}
+	
+	public String getCanonId() {
+		return canon.getId();
+	}
+	
+	public String getName(){
+		return name;
+	}
 }
