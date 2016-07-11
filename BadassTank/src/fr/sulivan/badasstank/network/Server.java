@@ -42,11 +42,6 @@ public class Server extends NetworkPoint{
 				ServerClient client = new ServerClient(socket);
 				clients.put(socket, client);
 				
-				/*int i=0;
-				while(i<1000){
-					send("TEST SEND "+ i +" TO CLIENT", socket);
-					i++;
-				}*/
 				new Thread(()->{
 					
 					while(running && client.getSocket().isConnected()){
@@ -107,16 +102,24 @@ public class Server extends NetworkPoint{
 		return query.substring(0, query.length()-1);
 	}
 
-	public void sendToAllExceptOne(String message, String except){
-		/*for(String key : clients.keySet()){
-			if(!key.equals(except)){
-				send(message, clients.get(key).getSocket());
+	public boolean broadcast(String message, Socket except){
+		boolean res = true;
+		for(Socket socket : clients.keySet()){
+			if(!socket.equals(except)){
+				res &= send(message, socket);
 			}
-		}*/
+		}
+		
+		return res;
 	}
 	
 	public void stop(){
 		running = false;
+	}
+
+	public boolean broadcast(String message, HashMap<String, String> parameters, Socket except) {
+		String event = message + " " + createQueryString(parameters);
+		return broadcast(event, except);
 	}
 
 

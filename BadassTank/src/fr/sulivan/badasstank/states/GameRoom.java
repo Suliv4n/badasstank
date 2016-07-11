@@ -245,8 +245,11 @@ public class GameRoom extends BasicGameState{
 						parameters.put("body", p.getCanonId());
 						parameters.put("name", p.getName());
 						
-						if(pos != position){	
+						if(pos != position){
 							server.send("addplayer", parameters, e.getSource());
+						}
+						else{
+							server.broadcast("addplayer", parameters, e.getSource());
 						}
 					}
 				}
