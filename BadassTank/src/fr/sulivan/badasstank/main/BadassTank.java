@@ -118,9 +118,12 @@ public class BadassTank extends StateBasedGame
 				int status = e.getIntParameter("status");
 				if(status == 0){
 					int position = e.getIntParameter("position");
-					System.out.println(position);
+					String key = e.getParameter("key");
+					
 					gameRoom.setPosition(position);
+					gameRoom.setRemoteKey(key);
 					gameRoom.configureClient(client);
+					
 					game.enterState(ID.GAME_ROOM);
 				}
 				else{
@@ -130,7 +133,6 @@ public class BadassTank extends StateBasedGame
 			
 
 		} catch (IOException e) {
-			//TODO envoyer message d'erreur au lieu de throw l'exception
 			throw new SlickException(e.getMessage(), e);
 		}
 	}

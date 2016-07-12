@@ -198,6 +198,8 @@ public class GameRoom extends BasicGameState{
 			
 			playerY += (position % boxNumberByColumn) * boxDimension;
 			
+			
+			g.drawString(players.get(position).getRemoteKey()+"", playerX + 20, playerY + 20);
 			players.get(position).render(playerX, playerY);
 		}
 		
@@ -226,24 +228,31 @@ public class GameRoom extends BasicGameState{
 		this.server = server;
 		//Set events
 		
+		server.setOnClientQuit(key -> {
+			removePlayerFromRemoteKey(key);
+		});
+		
 		//------JOIN---------
 		/*
 		 * When a clients ask to join the rooms.
 		 */
 		server.on("join", (e) -> {
+			String key = e.getKey();
+			
 			int position = 0;
 			
+			//recherche d'un emplacement vide
 			boolean adding = true;
 			while(players.get(position) != null && position < boxNumberByColumn*2){
 				position++;
 			}
 			
-			System.out.println(position);
-			
+			//On essaye d'ajouter le nouveau joueur
 			adding = false;
 			if(position < boxNumberByColumn*2){
 				try {
 					players.put(position, new Player(PiecesLoader.loader().loadCarterpillars().get(0), PiecesLoader.loader().loadCanons().get(0), Color.white, PiecesLoader.loader().loadBodies().get(0), "Client"));
+					players.get(position).setRemoteKey(key);
 					players.get(position).setRotation(90);
 					adding = true;
 					
@@ -252,10 +261,11 @@ public class GameRoom extends BasicGameState{
 				}
 			}
 			
-
 			if(adding){
 				System.out.println(e.getSource());
-				if(server.send("joinstatus status=0 message=ok position="+position, e.getSource())){
+				//Notification au client qu'il a bien été ajouté au serveur
+				if(server.send("joinstatus status=0 message=ok position=" + position + " key=" + e.getKey(), e.getSource())){
+					//Envoie des infos des autres joueurs au nouveau client + envoie des infos du nouveau client aux autres clients
 					for(Integer pos : players.keySet()){
 	
 						Player p = players.get(pos);
@@ -267,10 +277,18 @@ public class GameRoom extends BasicGameState{
 						parameters.put("body", p.getCanonId());
 						parameters.put("name", p.getName());
 						
-						if(pos != position){
-							server.send("addplayer", parameters, e.getSource());
+						//Si le joueur est le hosteur alors il n'a pas de clé.
+						if(pos.equals(currentPlayerPosition)){
+							parameters.put("key", "HOSTER");
 						}
 						else{
+							parameters.put("key", p.getRemoteKey());
+						}
+						
+						if(pos != position){ //envoie des infos au nouveau client.
+							server.send("addplayer", parameters, e.getSource());
+						}
+						else{ //envoie des infos du nouveau client aux autres clients
 							server.broadcast("addplayer", parameters, e.getSource());
 						}
 					}
@@ -309,7 +327,6 @@ public class GameRoom extends BasicGameState{
 			
 		});
 		
-		
 		this.hosting = true;
 	}
 	
@@ -335,6 +352,7 @@ public class GameRoom extends BasicGameState{
 			String canonId = e.getParameter("canon");
 			String name = e.getParameter("name");
 			int position = e.getIntParameter("position");
+			String key = e.getParameter("key");
 			
 			Player addingPlayer = new Player(
 					getCarterpillarFromId(carterpillarId), 
@@ -343,6 +361,7 @@ public class GameRoom extends BasicGameState{
 					getBodyFromId(bodyId), 
 					name);
 			addingPlayer.setRotation(90);
+			addingPlayer.setRemoteKey(key);
 			
 			players.put(position, addingPlayer);
 		});
@@ -365,6 +384,23 @@ public class GameRoom extends BasicGameState{
 			}
 			
 		});
+		
+		client.on("quit", e -> {
+			String key = e.getParameter("key");
+			removePlayerFromRemoteKey(key);
+		});
+		
+	}
+
+
+	private void removePlayerFromRemoteKey(String key) {
+		for(Integer position : players.keySet()){
+			
+			if(players.get(position).getRemoteKey() != null && players.get(position).getRemoteKey().equals(key)){
+				players.remove(position);
+				break;
+			}
+		}
 	}
 
 
@@ -374,4 +410,8 @@ public class GameRoom extends BasicGameState{
 		players.put(currentPlayerPosition, player);
 	}
 
+
+	public void setRemoteKey(String key) {
+		players.get(currentPlayerPosition).setRemoteKey(key);
+	}
 }

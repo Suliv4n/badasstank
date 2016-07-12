@@ -10,6 +10,7 @@ public class Event {
 	private String name;
 	private HashMap<String, String> parameters;
 	private Socket source;
+	private String key;
 	
 	public Event(String name, HashMap<String, String> parameters, Socket source){
 		this.parameters = parameters;
@@ -58,5 +59,13 @@ public class Event {
 
 	public HashMap<String, String> getParameters() {
 		return parameters;
+	}
+	
+	public void setKey(String key){
+		this.key = key;
+	}
+	
+	public String getKey(){
+		return key;
 	}
 }
