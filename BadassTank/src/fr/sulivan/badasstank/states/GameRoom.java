@@ -24,6 +24,7 @@ import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
 import fr.sulivan.badasstank.util.gui.Renderable;
+import fr.sulivan.badasstank.util.gui.TexturedButtonGUI;
 
 public class GameRoom extends BasicGameState{
 
@@ -45,6 +46,8 @@ public class GameRoom extends BasicGameState{
 	private Server server;
 	private Client client;
 	private boolean hosting = false;
+	
+	private TexturedButtonGUI go;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
@@ -160,8 +163,9 @@ public class GameRoom extends BasicGameState{
 			throws SlickException {
 		
 		g.clearWorldClip();
+		
+		//Draw borders
 		g.setColor(borderColor);
-
 		
 		g.drawLine(0, headerHeight - 1, Configuration.SCREEN_WIDTH, headerHeight - 1);
 		g.drawLine(0, headerHeight, Configuration.SCREEN_WIDTH, headerHeight);
@@ -177,21 +181,22 @@ public class GameRoom extends BasicGameState{
 		g.drawLine(Configuration.SCREEN_WIDTH - boxDimension-1, headerHeight, Configuration.SCREEN_WIDTH - boxDimension-1, Configuration.SCREEN_HEIGHT);
 		g.drawLine(Configuration.SCREEN_WIDTH -boxDimension-2, headerHeight, Configuration.SCREEN_WIDTH - boxDimension-2, Configuration.SCREEN_HEIGHT);
 		
-		int y = headerHeight;
+		int boxY = headerHeight;
 		for(int i=0; i<boxNumberByColumn; i++){
-			y+=boxDimension;
+			boxY+=boxDimension;
 			
-			g.drawLine(0, y+1, boxDimension, y+1);
-			g.drawLine(0, y+2, boxDimension, y+2);
+			g.drawLine(0, boxY+1, boxDimension, boxY+1);
+			g.drawLine(0, boxY+2, boxDimension, boxY+2);
 			
-			g.drawLine(Configuration.SCREEN_WIDTH - boxDimension, y+1,Configuration.SCREEN_WIDTH, y+1);
-			g.drawLine(Configuration.SCREEN_WIDTH - boxDimension, y+2, Configuration.SCREEN_WIDTH, y+2);
+			g.drawLine(Configuration.SCREEN_WIDTH - boxDimension, boxY+1,Configuration.SCREEN_WIDTH, boxY+1);
+			g.drawLine(Configuration.SCREEN_WIDTH - boxDimension, boxY+2, Configuration.SCREEN_WIDTH, boxY+2);
 		}
 		
 		int statY = 200;
 		g.drawLine(boxDimension+1, statY, Configuration.SCREEN_WIDTH - boxDimension-1, statY);
 		g.drawLine(boxDimension+1, statY+1, Configuration.SCREEN_WIDTH - boxDimension-1, statY+1);
 		
+		//draw players
 		for(Integer position : players.keySet()){
 			int playerX = boxDimension / 2 - players.get(position).getWidth() / 2;
 			int playerY = headerHeight + boxDimension / 2 - players.get(position).getHeight() / 2;
@@ -203,7 +208,26 @@ public class GameRoom extends BasicGameState{
 			players.get(position).render(playerX, playerY);
 		}
 		
+		//draw stats
+		Player player = players.get(currentPlayerPosition);
+		int x = boxDimension + 10;
+		int y = statY + 10;
+		int stringHeight = g.getFont().getHeight("E");
 		
+		g.drawString("Body : " + player.getBody(), x, y);
+		y+=stringHeight;
+		g.drawString("Cartepillar : " + player.getCarterpillar(), x, y);
+		y+=stringHeight;
+		g.drawString("Canon : " + player.getCanon(), x, y);
+		
+		y+=stringHeight + 10;
+		g.drawString("Armor : " + player.getMaximumHealth(), x, y);
+		y+=stringHeight;
+		g.drawString("Speed : " + player.getSpeed(), x, y);
+		y+=stringHeight;
+		g.drawString("Rotation : " + player.getSpeedRotation(), x, y);
+		y+=stringHeight;
+		g.drawString("Power : " + player.getPower(), x, y);
 		
 		bodies.render(g);
 		canons.render(g);
@@ -227,6 +251,7 @@ public class GameRoom extends BasicGameState{
 	public void configureServer(Server server) {
 		this.server = server;
 		//Set events
+		server.clearEvents();
 		
 		server.setOnClientQuit(key -> {
 			removePlayerFromRemoteKey(key);
@@ -272,7 +297,7 @@ public class GameRoom extends BasicGameState{
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						
 						parameters.put("position", String.valueOf(pos));
-						parameters.put("carterpillar", p.getCartillarId());
+						parameters.put("carterpillar", p.getCarterpillarId());
 						parameters.put("canon", p.getCanonId());
 						parameters.put("body", p.getCanonId());
 						parameters.put("name", p.getName());
@@ -345,6 +370,7 @@ public class GameRoom extends BasicGameState{
 	public void configureClient(Client client) {
 		this.client = client;
 		this.hosting = false;
+		client.clearEvents();
 		
 		client.on("addplayer",e -> {
 			String carterpillarId = e.getParameter("carterpillar");

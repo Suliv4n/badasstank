@@ -18,6 +18,9 @@ public abstract class NetworkPoint {
 		events.put(event, callback);
 	}
 	
+	public void clearEvents(){
+		events.clear();
+	}
 
 	protected String createQueryString(HashMap<String, String> parameters) {
 		if(parameters == null){
@@ -27,9 +30,7 @@ public abstract class NetworkPoint {
 		String query = "";
 		for(String key : parameters.keySet()){
 			String value = parameters.get(key);
-			if(value == null){
-				System.out.println("PUTAIN DE CONNASE DE VALEUR NULL => " + key);
-			}
+			
 			if(value.contains(" ") || value.contains("\"")){
 				value = value.replaceAll("\"", "\\\"");
 				value = "\""+value+"\"";

@@ -177,9 +177,6 @@ public class Tank {
 		return carterpillar.getHeight();
 	}
 	
-	public Canon getCanon(){
-		return canon;
-	}
 	
 	public double getSpeed(){
 		return carterpillar.getSpeed();
@@ -187,6 +184,10 @@ public class Tank {
 	
 	public double getSpeedRotation(){
 		return carterpillar.getSpeedRotation();
+	}
+	
+	public int getPower() {
+		return canon.getPower();
 	}
 	
 	public void update(Map map, boolean center){
@@ -258,7 +259,7 @@ public class Tank {
 		this.carterpillar = cartepillar;
 	}
 	
-	public String getCartillarId() {
+	public String getCarterpillarId() {
 		return carterpillar.getId();
 	}
 	
@@ -272,5 +273,16 @@ public class Tank {
 	
 	public String getName(){
 		return name;
+	}
+	
+	public Carterpillar getCarterpillar() {
+		return carterpillar;
+	}
+	public Body getBody() {
+		return body;
+	}
+	
+	public Canon getCanon() {
+		return canon;
 	}
 }

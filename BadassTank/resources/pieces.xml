@@ -52,6 +52,7 @@
 				<image x="0" y="0" width="8" height="9">resources/spritesheets/bullet.png</image>
 				<speed>3.0</speed>
 				<cooldown>500</cooldown>
+				<power>3</power>
 				<range>100</range>
 			</bullet>
 		</canon>

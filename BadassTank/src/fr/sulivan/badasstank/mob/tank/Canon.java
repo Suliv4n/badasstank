@@ -12,6 +12,8 @@ public class Canon extends TankPiece implements Cloneable {
 	private Image bulletImage;
 	private ParticleSystem particles;
 	private float speedBullet;
+	private int power;
+	private int bulletPower;
 	
 	private int cooldown;
 	private int range;
@@ -19,8 +21,8 @@ public class Canon extends TankPiece implements Cloneable {
 	private int centerX;
 	private int centerY;
 
-	public Canon(String id, Image image, int centerX, int centerY, Image bulletImage, ParticleSystem particles, float speedBullet, int range, int cooldown){
-		super(id);
+	public Canon(String id, String name, Image image, int centerX, int centerY, Image bulletImage, ParticleSystem particles, float speedBullet, int range, int power, int cooldown){
+		super(id, name);
 		this.image = image;
 		image.setCenterOfRotation(centerX, centerY);
 		this.bulletImage = bulletImage;
@@ -32,6 +34,8 @@ public class Canon extends TankPiece implements Cloneable {
 		
 		this.range = range;
 		this.cooldown = cooldown;
+		
+		this.power = power;
 				
 	}
 	
@@ -60,7 +64,7 @@ public class Canon extends TankPiece implements Cloneable {
 	}
 	
 	public Displayer fire(int x1, int y1, int x2, int y2){
-			return new BulletDisplayer(getBulletImage(), getParticles(), x1, y1, x2, y2, getSpeedBullet(), this.range);
+			return new BulletDisplayer(getBulletImage(), getParticles(), x1, y1, x2, y2, getSpeedBullet(), this.range, this.power);
 	}
 	
 	//Bullet
@@ -91,5 +95,9 @@ public class Canon extends TankPiece implements Cloneable {
 		}
 		
 		return clone;
+	}
+
+	public int getPower() {
+		return power;
 	}
 }

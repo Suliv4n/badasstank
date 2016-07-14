@@ -5,8 +5,8 @@ import org.newdawn.slick.Image;
 public class Body extends TankPiece implements Cloneable{
 	private Image image;
 	
-	public Body(String id, Image image){
-		super(id);
+	public Body(String id, String name, Image image){
+		super(id, name);
 		this.image = image;
 	}
 

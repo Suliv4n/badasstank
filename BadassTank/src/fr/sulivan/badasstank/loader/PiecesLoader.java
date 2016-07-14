@@ -56,10 +56,11 @@ public class PiecesLoader {
 		for(XMLElement element : getChildrenFromXMLElement(XMLbodies, "body")){
 			String id = element.getAttribute("id");
 			XMLElement XMLImage = element.getChildrenByName("image").get(0);
+			String name = element.getChildrenByName("name").get(0).getContent();
 			
 			Image image = getImage(XMLImage, 16, 18);
 			
-			Body  body = new Body(id, image);
+			Body  body = new Body(id, name, image);
 			
 			bodies.add(body);
 		}
@@ -90,11 +91,12 @@ public class PiecesLoader {
 			String id = element.getAttribute("id");
 			double speed = Double.parseDouble(element.getChildrenByName("speed").get(0).getContent());
 			double rotation = Double.parseDouble(element.getChildrenByName("rotation").get(0).getContent());
+			String name = element.getChildrenByName("name").get(0).getContent();
 			
 			XMLElement XMLImage = element.getChildrenByName("image").get(0);
 			
 			SpriteSheet sprites = new SpriteSheet(getImage(XMLImage, 21, 23), 7 ,23);
-			Carterpillar carterpillar = new Carterpillar(id, sprites, speed, rotation);
+			Carterpillar carterpillar = new Carterpillar(id, name, sprites, speed, rotation);
 			
 			carterpillars.add(carterpillar);
 		}
@@ -127,9 +129,11 @@ public class PiecesLoader {
 			
 			float bulletSpeed = Float.parseFloat(XMLBullet.getChildrenByName("speed").get(0).getContent());
 			int range = Integer.parseInt(XMLBullet.getChildrenByName("range").get(0).getContent());
+			int power = Integer.parseInt(XMLBullet.getChildrenByName("power").get(0).getContent());
 			int cooldown = Integer.parseInt(XMLBullet.getChildrenByName("cooldown").get(0).getContent());
+			String name = element.getChildrenByName("name").get(0).getContent();
 			
-			Canon canon = new Canon(id, image, centerX, centerY, bulletImage, particles, bulletSpeed, range, cooldown);
+			Canon canon = new Canon(id, name, image, centerX, centerY, bulletImage, particles, bulletSpeed, range, power, cooldown);
 			
 			canons.add(canon);
 		}

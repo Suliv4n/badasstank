@@ -18,8 +18,9 @@ public class BulletDisplayer extends Displayer{
 	private float distance = 0;
 	private int range;
 	
+	private int power;
 	
-	public BulletDisplayer(Image image, ParticleSystem particles, int x1, int y1 , int x2, int y2, float speed, int range) {
+	public BulletDisplayer(Image image, ParticleSystem particles, int x1, int y1 , int x2, int y2, float speed, int range, int power) {
 		super(x1, y1);
 		double hypo = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 		double angle = Math.acos((x1-x2) / hypo);
@@ -39,6 +40,7 @@ public class BulletDisplayer extends Displayer{
 		this.particles = particles;
 		
 		this.range = range;
+		this.power = power;
 	}
 	
 	
@@ -51,7 +53,7 @@ public class BulletDisplayer extends Displayer{
 			particles.render((int)x, (int)y);
 		}
 		
-		//En fonction de la map a foutre dans update
+		//TODO En fonction de la map. À foutre dans update
 		hitbox.setCenterX(x);
 		hitbox.setCenterY(y);
 	}

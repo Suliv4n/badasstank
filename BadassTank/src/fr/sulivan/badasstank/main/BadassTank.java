@@ -67,7 +67,6 @@ public class BadassTank extends StateBasedGame
 		
 		addState(titleScreen);
 		addState(sandbox);
-		addState(sandbox);
 		addState(tankBuilding);
 		addState(serverConfiguration);
 		addState(joinConfiguration);

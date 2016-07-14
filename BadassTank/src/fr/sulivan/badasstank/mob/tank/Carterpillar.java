@@ -10,8 +10,8 @@ public class Carterpillar extends TankPiece implements Cloneable{
 	private double speed;
 	private double speedRotation;
 	
-	public Carterpillar(String id, SpriteSheet spritesheet, double speed, double speedRotation){
-		super(id);
+	public Carterpillar(String id, String name, SpriteSheet spritesheet, double speed, double speedRotation){
+		super(id, name);
 		this.spritesheet = spritesheet;
 		buildAnimation();
 		this.speed = speed;
