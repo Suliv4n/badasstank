@@ -3,8 +3,11 @@ package fr.sulivan.badasstank.main;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.mob.player.Player;
+import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.NetworkException;
 import fr.sulivan.badasstank.network.Server;
@@ -134,6 +137,10 @@ public class BadassTank extends StateBasedGame
 		} catch (IOException e) {
 			throw new SlickException(e.getMessage(), e);
 		}
+	}
+
+	public static void startGame(Server server, PlayersSet players) {
+		game.enterState(ID.GAME);
 	}
 
 

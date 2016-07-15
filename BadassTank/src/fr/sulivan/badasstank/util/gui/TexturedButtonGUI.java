@@ -39,7 +39,7 @@ public class TexturedButtonGUI extends ButtonGUI{
 		
 		Image textureApply = textureMouseover != null && isMouseover() ? textureMouseover : texture;
 		
-		g.setWorldClip(new Rectangle(getX()-border, getY()-border, width+border*2, height+border*2));
+		g.setClip(new Rectangle(getX()-border, getY()-border, width+border*2, height+border*2));
 		for(int x=getX(); x < getX() + width; x+=textureApply.getWidth()){
 			for(int y=getY(); y < getY() + height; y+=textureApply.getHeight()){
 				g.drawImage(textureApply, x, y);

@@ -58,7 +58,6 @@ public class SandBox extends BasicGameState{
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		
-		
 		bodiesList = new CarouselListGUI<Body>(
 				new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
 				new Color(0,100,200), 
@@ -133,6 +132,8 @@ public class SandBox extends BasicGameState{
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 		
+		
+
 		map.drawLayer(0);
 		player1.render(true, g, map);
 		player2.render(false, g, map);

@@ -15,7 +15,9 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.loader.PiecesLoader;
+import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.mob.player.Player;
+import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
@@ -29,7 +31,7 @@ import fr.sulivan.badasstank.util.gui.TexturedButtonGUI;
 public class GameRoom extends BasicGameState{
 
 	private final Color borderColor = Color.white;
-	private  HashMap<Integer, Player> players;
+	private  PlayersSet players;
 	
 	private final int headerHeight = 31;
 	private int boxNumberByColumn = 4;
@@ -52,7 +54,7 @@ public class GameRoom extends BasicGameState{
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		players = new HashMap<Integer, Player>();
+		players = new PlayersSet(boxNumberByColumn * 2);
 		
 		int x=150;
 		int y=60;
@@ -152,6 +154,15 @@ public class GameRoom extends BasicGameState{
 			}
 		});
 		
+		go = new TexturedButtonGUI(new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"), 100, 30, "Go >>");
+		go.setTextureMouseOver(new Image(Configuration.RESOURCES_FOLDER+"textures/yandb_mouseover.png"));
+		go.setBorder(2, Color.white);
+		go.setX(400);
+		go.setY(Configuration.SCREEN_HEIGHT - go.getHeight() - 10);
+		go.setOnClick(() -> {
+			BadassTank.startGame(server, players);
+		});
+		
 		Player player = new Player((Carterpillar)carterpillars.getElement().clone(), (Canon)canons.getElement().clone(), Color.white, (Body)bodies.getElement().clone(), "Unnamed");
 		player.setRotation(90);
 		players.put(currentPlayerPosition, player);
@@ -232,6 +243,10 @@ public class GameRoom extends BasicGameState{
 		bodies.render(g);
 		canons.render(g);
 		carterpillars.render(g);
+		
+		if(hosting){
+			go.render(g);
+		}
 	}
 
 	@Override
@@ -241,6 +256,10 @@ public class GameRoom extends BasicGameState{
 		bodies.update(container, delta);
 		canons.update(container, delta);
 		carterpillars.update(container, delta);
+		
+		if(hosting){
+			go.update(container);
+		}
 	}
 
 	@Override
@@ -254,7 +273,7 @@ public class GameRoom extends BasicGameState{
 		server.clearEvents();
 		
 		server.setOnClientQuit(key -> {
-			removePlayerFromRemoteKey(key);
+			players.removeFromRemoteKey(key);
 		});
 		
 		//------JOIN---------
@@ -264,26 +283,16 @@ public class GameRoom extends BasicGameState{
 		server.on("join", (e) -> {
 			String key = e.getKey();
 			
-			int position = 0;
-			
-			//recherche d'un emplacement vide
-			boolean adding = true;
-			while(players.get(position) != null && position < boxNumberByColumn*2){
-				position++;
-			}
-			
-			//On essaye d'ajouter le nouveau joueur
-			adding = false;
-			if(position < boxNumberByColumn*2){
-				try {
-					players.put(position, new Player(PiecesLoader.loader().loadCarterpillars().get(0), PiecesLoader.loader().loadCanons().get(0), Color.white, PiecesLoader.loader().loadBodies().get(0), "Client"));
-					players.get(position).setRemoteKey(key);
-					players.get(position).setRotation(90);
-					adding = true;
-					
-				} catch (Exception ex) {
-					adding = false;
-				}
+			int position = -1;
+			boolean adding;
+			try {
+				position = players.add(new Player(PiecesLoader.loader().loadCarterpillars().get(0), PiecesLoader.loader().loadCanons().get(0), Color.white, PiecesLoader.loader().loadBodies().get(0), "Client"));
+				players.get(position).setRemoteKey(key);
+				players.get(position).setRotation(90);
+				adding = position != -1;
+				
+			} catch (Exception ex) {
+				adding = false;
 			}
 			
 			if(adding){
@@ -413,21 +422,13 @@ public class GameRoom extends BasicGameState{
 		
 		client.on("quit", e -> {
 			String key = e.getParameter("key");
-			removePlayerFromRemoteKey(key);
+			players.removeFromRemoteKey(key);
 		});
 		
 	}
 
 
-	private void removePlayerFromRemoteKey(String key) {
-		for(Integer position : players.keySet()){
-			
-			if(players.get(position).getRemoteKey() != null && players.get(position).getRemoteKey().equals(key)){
-				players.remove(position);
-				break;
-			}
-		}
-	}
+
 
 
 	public void setPosition(int position) {
