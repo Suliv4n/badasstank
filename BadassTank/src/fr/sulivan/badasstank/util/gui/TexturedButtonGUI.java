@@ -76,6 +76,11 @@ public class TexturedButtonGUI extends ButtonGUI{
 	public void setTextureMouseOver(Image texture) {
 		textureMouseover = texture;
 	}
+
+	public void setLocation(int x, int y) {
+		setX(x);
+		setY(y);
+	}
 	
 
 }

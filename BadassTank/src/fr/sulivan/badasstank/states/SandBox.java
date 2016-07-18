@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.plaf.SliderUI;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -30,8 +32,12 @@ import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
+import fr.sulivan.badasstank.util.gui.ColorPickerGUI;
 import fr.sulivan.badasstank.util.gui.ColoredButtonGUI;
-import fr.sulivan.badasstank.util.gui.Renderable;
+import fr.sulivan.badasstank.util.gui.ElementRenderer;
+import fr.sulivan.badasstank.util.gui.InputGUI;
+import fr.sulivan.badasstank.util.gui.PopupGUI;
+import fr.sulivan.badasstank.util.gui.RangeGUI;
 
 public class SandBox extends BasicGameState{
 
@@ -49,14 +55,40 @@ public class SandBox extends BasicGameState{
 	private int cursorX;
 	private int cursorY;
 	
+	private InputGUI input;
+	
 	private HUD hud;
 	
 	//private ColoredButtonGUI button;
 	private CarouselListGUI<Body> bodiesList;
+	private RangeGUI slider;
+	
+	private ColorPickerGUI popup;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		
+		input = new InputGUI(container, 60, 20);
+		input.setLocation(400, 210);
+		input.setBorder(2, Color.blue);
+		
+		slider = new RangeGUI(Color.white, 200, 0, 255);
+		
+		slider.setX(200);
+		slider.setY(200);
+		
+		input.bind(slider);
+		
+		//popup = new PopupGUI("Test", 300, 100, );
+		popup = new ColorPickerGUI(container, "TEST color picker", new Image(Configuration.RESOURCES_FOLDER+"buttons/close.png", new Color(255,0,255)),
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"),
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb_mouseover.png") );
+		
+		popup.setLocation(10, 10);
+		popup.setBorder(2, new Color(150,150,150));
+		popup.setBackgroundColor( new Color(30,30,30));
+		popup.open();
 		
 		bodiesList = new CarouselListGUI<Body>(
 				new Image(Configuration.RESOURCES_FOLDER+"buttons/down.png"), new Image(Configuration.RESOURCES_FOLDER+"buttons/up.png"), 
@@ -68,7 +100,7 @@ public class SandBox extends BasicGameState{
 		bodiesList.setX(200);
 		bodiesList.setY(10);
 		
-		bodiesList.setElementRenderer(new Renderable<Body>() {
+		bodiesList.setElementRenderer(new ElementRenderer<Body>() {
 			@Override
 			public void render(Graphics g, int x, int y, int index, Body element){
 				int displayedX = x + 15;
@@ -155,13 +187,19 @@ public class SandBox extends BasicGameState{
 		hud.render(g);
 		
 		bodiesList.render(g);
+		
+		slider.render(g);
+		
+		input.render(g);
+		
+		popup.render(g);
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		Input in = container.getInput();
-		
+		popup.update(container);
 		bodiesList.update(container, delta);
 		
 		mapX = Configuration.SCREEN_WIDTH / 2 - player1.getX();
@@ -217,6 +255,9 @@ public class SandBox extends BasicGameState{
 		
 		
 		hud.update();
+		
+		slider.update(container);
+		
 	}
 
 	@Override

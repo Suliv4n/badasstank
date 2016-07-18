@@ -27,16 +27,27 @@ import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.displayer.Displayer;
 import fr.sulivan.badasstank.mob.player.Player;
+import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.mob.tank.Body;
 import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
+import fr.sulivan.badasstank.network.Client;
+import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
 import fr.sulivan.badasstank.util.gui.ColoredButtonGUI;
-import fr.sulivan.badasstank.util.gui.Renderable;
+import fr.sulivan.badasstank.util.gui.ElementRenderer;
 
 public class Battle extends BasicGameState{
 
-	private HashMap<Integer, Player> players;
+	private PlayersSet players;
+	private Map map;
+	
+	private Server server;
+	private Client client;
+	
+	private int currentPlayerPosition;
+	
+	private boolean hosting;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
@@ -54,14 +65,30 @@ public class Battle extends BasicGameState{
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
-		return 0;
+		return ID.BATTLE;
+	}
+	
+	public void configureServer(Server server){
+		this.server = server;
+		hosting = true;
+	}
+	
+	public void configureClient(Client client){
+		this.client = client;
+		hosting = false;
+	}
+	
+	public void setPlayers(PlayersSet players){
+		this.players = players;
+	}
+	
+	public void setMap(Map map){
+		this.map = map;
 	}
 
 }

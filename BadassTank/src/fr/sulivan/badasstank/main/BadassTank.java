@@ -6,11 +6,13 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.NetworkException;
 import fr.sulivan.badasstank.network.Server;
+import fr.sulivan.badasstank.states.Battle;
 import fr.sulivan.badasstank.states.GameRoom;
 import fr.sulivan.badasstank.states.ID;
 import fr.sulivan.badasstank.states.JoinConfiguration;
@@ -26,6 +28,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.tiled.TiledMap;
 
 
 public class BadassTank extends StateBasedGame 
@@ -41,6 +44,7 @@ public class BadassTank extends StateBasedGame
 	private ServerConfiguration serverConfiguration;
 	private JoinConfiguration joinConfiguration;
 	private GameRoom gameRoom;
+	private Battle battle;
 	
 	private static boolean fullScreen = false;
 	private static BadassTank game;
@@ -68,8 +72,8 @@ public class BadassTank extends StateBasedGame
 		joinConfiguration = new JoinConfiguration();
 		gameRoom = new GameRoom();
 		
-		addState(titleScreen);
 		addState(sandbox);
+		addState(titleScreen);
 		addState(tankBuilding);
 		addState(serverConfiguration);
 		addState(joinConfiguration);
@@ -139,8 +143,19 @@ public class BadassTank extends StateBasedGame
 		}
 	}
 
-	public static void startGame(Server server, PlayersSet players) {
-		game.enterState(ID.GAME);
+	public void startBattle(Server server, PlayersSet players, int position) {
+		
+		//TODO sélection map
+		try {
+			battle.configureServer(server);
+			battle.setPlayers(players);
+			battle.setMap(new Map(new TiledMap("resources/map/test.tmx")));
+			server.broadcast("battlestart");
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+		
+		game.enterState(ID.BATTLE);
 	}
 
 

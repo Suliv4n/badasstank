@@ -27,7 +27,7 @@ public class CarouselListGUI<T> {
 	private int elementWidth;
 	private int elementHeight;
 	
-	private Renderable<T> elementRenderer;
+	private ElementRenderer<T> elementRenderer;
 	
 	private boolean slidingUp = false;
 	private boolean slidingDown = false;
@@ -38,7 +38,7 @@ public class CarouselListGUI<T> {
 	
 	public CarouselListGUI(Image nextButton, Image previousButton, Color buttonColor, int elementWidth, int elementHeight, int innerHeight){
 		
-		elementRenderer = new Renderable<T>() {};
+		elementRenderer = new ElementRenderer<T>() {};
 		
 		elements = new ArrayList<T>();
 		next = new ColoredButtonGUI(nextButton, buttonColor);
@@ -143,7 +143,7 @@ public class CarouselListGUI<T> {
 		g.clearClip();
 	}
 	
-	public void setElementRenderer(Renderable<T> renderer){
+	public void setElementRenderer(ElementRenderer<T> renderer){
 		this.elementRenderer = renderer;
 	}
 	

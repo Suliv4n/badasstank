@@ -15,7 +15,7 @@ import fr.sulivan.badasstank.mob.tank.Canon;
 import fr.sulivan.badasstank.mob.tank.Carterpillar;
 import fr.sulivan.badasstank.mob.tank.Tank;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
-import fr.sulivan.badasstank.util.gui.Renderable;
+import fr.sulivan.badasstank.util.gui.ElementRenderer;
 
 public class TankBuilding extends BasicGameState{
 
@@ -40,7 +40,7 @@ public class TankBuilding extends BasicGameState{
 				new Color(50, 180, 20), 
 				30, 30, 
 				50);
-		bodiesList.setElementRenderer(new Renderable<Body>() {
+		bodiesList.setElementRenderer(new ElementRenderer<Body>() {
 			@Override
 			public void render(Graphics g, int x, int y, int index, Body element){
 				int displayedX = x + 15;
@@ -60,7 +60,7 @@ public class TankBuilding extends BasicGameState{
 				new Color(50, 180, 20), 
 				30, 30, 
 				50);
-		carterpillarsList.setElementRenderer(new Renderable<Carterpillar>() {
+		carterpillarsList.setElementRenderer(new ElementRenderer<Carterpillar>() {
 			@Override
 			public void render(Graphics g, int x, int y, int index, Carterpillar element){
 				int displayedX = x + 15;
@@ -81,7 +81,7 @@ public class TankBuilding extends BasicGameState{
 				new Color(50, 180, 20), 
 				30, 30, 
 				50);
-		canonsList.setElementRenderer(new Renderable<Canon>() {
+		canonsList.setElementRenderer(new ElementRenderer<Canon>() {
 			@Override
 			public void render(Graphics g, int x, int y, int index, Canon element){
 				int displayedX = x + 15;

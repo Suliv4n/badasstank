@@ -25,7 +25,7 @@ import fr.sulivan.badasstank.mob.tank.TankPiece;
 import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
-import fr.sulivan.badasstank.util.gui.Renderable;
+import fr.sulivan.badasstank.util.gui.ElementRenderer;
 import fr.sulivan.badasstank.util.gui.TexturedButtonGUI;
 
 public class GameRoom extends BasicGameState{
@@ -69,7 +69,7 @@ public class GameRoom extends BasicGameState{
 		bodies.setX(x);
 		bodies.setY(y);
 
-		bodies.setElementRenderer(new Renderable<Body>() {
+		bodies.setElementRenderer(new ElementRenderer<Body>() {
 			@Override
 			public void render(Graphics g, int x, int y, int index, Body element){
 				int displayedX = x + 15;
@@ -102,7 +102,7 @@ public class GameRoom extends BasicGameState{
 		canons.setX(x);
 		canons.setY(y);
 
-		canons.setElementRenderer(new Renderable<Canon>() {
+		canons.setElementRenderer(new ElementRenderer<Canon>() {
 			@Override
 			public void render(Graphics g, int x, int y, int index, Canon element){
 				int displayedX = x + 15;
@@ -133,7 +133,7 @@ public class GameRoom extends BasicGameState{
 		carterpillars.setX(x);
 		carterpillars.setY(y);
 
-		carterpillars.setElementRenderer(new Renderable<Carterpillar>() {
+		carterpillars.setElementRenderer(new ElementRenderer<Carterpillar>() {
 			@Override
 			public void render(Graphics g, int x, int y, int index, Carterpillar element){
 				int displayedX = x + 15;
@@ -160,7 +160,7 @@ public class GameRoom extends BasicGameState{
 		go.setX(400);
 		go.setY(Configuration.SCREEN_HEIGHT - go.getHeight() - 10);
 		go.setOnClick(() -> {
-			BadassTank.startGame(server, players);
+			BadassTank.game().startBattle(server, players, currentPlayerPosition);
 		});
 		
 		Player player = new Player((Carterpillar)carterpillars.getElement().clone(), (Canon)canons.getElement().clone(), Color.white, (Body)bodies.getElement().clone(), "Unnamed");
