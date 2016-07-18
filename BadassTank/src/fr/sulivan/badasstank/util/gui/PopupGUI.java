@@ -106,6 +106,11 @@ public class PopupGUI {
 	public void close(){
 		open = false;
 	}
+	
+	public boolean isOpen(){
+		return open;
+	}
+	
 	public void setBackgroundColor(Color color) {
 		backgroundColor = color;
 	}

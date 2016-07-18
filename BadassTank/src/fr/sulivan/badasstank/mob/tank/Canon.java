@@ -1,5 +1,6 @@
 package fr.sulivan.badasstank.mob.tank;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.particles.ParticleSystem;
 
@@ -20,6 +21,8 @@ public class Canon extends TankPiece implements Cloneable {
 	
 	private int centerX;
 	private int centerY;
+	
+	private Color color;
 
 	public Canon(String id, String name, Image image, int centerX, int centerY, Image bulletImage, ParticleSystem particles, float speedBullet, int range, int power, int cooldown){
 		super(id, name);
@@ -57,6 +60,7 @@ public class Canon extends TankPiece implements Cloneable {
 	}
 	
 	public void setColor(float r, float g, float b){
+		color = new Color(r,g,b);
 		image.setColor(0, r, g, b);
 		image.setColor(1, r, g, b);
 		image.setColor(2, r, g, b);
@@ -99,5 +103,9 @@ public class Canon extends TankPiece implements Cloneable {
 
 	public int getPower() {
 		return power;
+	}
+	
+	public Color getColor() {
+		return color;
 	}
 }

@@ -25,6 +25,8 @@ import fr.sulivan.badasstank.mob.tank.TankPiece;
 import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.util.gui.CarouselListGUI;
+import fr.sulivan.badasstank.util.gui.ColorPickerGUI;
+import fr.sulivan.badasstank.util.gui.ColoredBullButton;
 import fr.sulivan.badasstank.util.gui.ElementRenderer;
 import fr.sulivan.badasstank.util.gui.TexturedButtonGUI;
 
@@ -50,6 +52,14 @@ public class GameRoom extends BasicGameState{
 	private boolean hosting = false;
 	
 	private TexturedButtonGUI go;
+	
+	private ColorPickerGUI carterpillarColor;
+	private ColorPickerGUI bodyColor;
+	private ColorPickerGUI canonColor;
+	
+	private ColoredBullButton changeCarterpillarColor;
+	private ColoredBullButton changeBodyColor;
+	private ColoredBullButton changeCanonColor;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
@@ -166,6 +176,79 @@ public class GameRoom extends BasicGameState{
 		Player player = new Player((Carterpillar)carterpillars.getElement().clone(), (Canon)canons.getElement().clone(), Color.white, (Body)bodies.getElement().clone(), "Unnamed");
 		player.setRotation(90);
 		players.put(currentPlayerPosition, player);
+		
+		
+		carterpillarColor = new ColorPickerGUI(container, "Carterpillar color", 
+				new Image(Configuration.RESOURCES_FOLDER+"buttons/close.png", new Color(255,0,255)), 
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"), 
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb_mouseover.png"));
+		carterpillarColor.setLocation(Configuration.SCREEN_WIDTH/2 - carterpillarColor.getWidth()/2, 200);
+		carterpillarColor.setBackgroundColor(new Color(50,50,50));
+		carterpillarColor.setBorder(2,new Color(150,150,150));
+		carterpillarColor.setOnValidate(() -> {
+			Color color = carterpillarColor.getColor();
+			player.getCarterpillar().setColor(color.r, color.g, color.b);
+			changeCarterpillarColor.setColor(color);
+			carterpillarColor.close();
+		});
+		
+		bodyColor = new ColorPickerGUI(container, "Body color", 
+				new Image(Configuration.RESOURCES_FOLDER+"buttons/close.png", new Color(255,0,255)), 
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"), 
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb_mouseover.png"));
+		bodyColor.setLocation(Configuration.SCREEN_WIDTH/2 - carterpillarColor.getWidth()/2, 200);
+		bodyColor.setBackgroundColor(new Color(50,50,50));
+		bodyColor.setBorder(2,new Color(150,150,150));
+		bodyColor.setOnValidate(() -> {
+			Color color = bodyColor.getColor();
+			player.getBody().setColor(color.r, color.g, color.b);
+			changeBodyColor.setColor(color);
+			bodyColor.close();
+		});
+		
+		canonColor = new ColorPickerGUI(container, "Canon color", 
+				new Image(Configuration.RESOURCES_FOLDER+"buttons/close.png", new Color(255,0,255)), 
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb.png"), 
+				new Image(Configuration.RESOURCES_FOLDER+"textures/yandb_mouseover.png"));
+		canonColor.setLocation(Configuration.SCREEN_WIDTH/2 - carterpillarColor.getWidth()/2, 200);
+		canonColor.setBackgroundColor(new Color(50,50,50));
+		canonColor.setBorder(2,new Color(150,150,150));
+		canonColor.setOnValidate(() -> {
+			Color color = canonColor.getColor();
+			player.getCanon().setColor(color.r, color.g, color.b);
+			changeCanonColor.setColor(color);
+			canonColor.close();
+		});
+		
+		changeCarterpillarColor = new ColoredBullButton(10, player.getCarterpillar().getColor());
+		changeBodyColor = new ColoredBullButton(10, player.getBody().getColor());
+		changeCanonColor = new ColoredBullButton(10, player.getCanon().getColor());
+		
+		changeCarterpillarColor.setOnClick(() -> {
+			carterpillarColor.open();
+			canonColor.close();
+			bodyColor.close();
+			
+			carterpillarColor.setColor(player.getCarterpillar().getColor());
+		});
+		
+		
+		changeBodyColor.setOnClick(() -> {
+			carterpillarColor.close();
+			canonColor.close();
+			bodyColor.open();
+			
+			bodyColor.setColor(player.getBody().getColor());
+		});
+		
+		
+		changeCanonColor.setOnClick(() -> {
+			carterpillarColor.close();
+			canonColor.open();
+			bodyColor.close();
+			
+			canonColor.setColor(player.getCanon().getColor());
+		});
 	}
 
 
@@ -225,11 +308,14 @@ public class GameRoom extends BasicGameState{
 		int y = statY + 10;
 		int stringHeight = g.getFont().getHeight("E");
 		
-		g.drawString("Body : " + player.getBody(), x, y);
+		changeBodyColor.setLocation(x, y + 5);
+		g.drawString("Body : " + player.getBody(), x + changeBodyColor.getWidth()+5, y);
 		y+=stringHeight;
-		g.drawString("Cartepillar : " + player.getCarterpillar(), x, y);
+		changeCarterpillarColor.setLocation(x, y + 5);
+		g.drawString("Cartepillar : " + player.getCarterpillar(), x + changeCarterpillarColor.getWidth()+5, y);
 		y+=stringHeight;
-		g.drawString("Canon : " + player.getCanon(), x, y);
+		changeCanonColor.setLocation(x, y + 5);
+		g.drawString("Canon : " + player.getCanon(), x + changeCanonColor.getWidth()+5, y);
 		
 		y+=stringHeight + 10;
 		g.drawString("Armor : " + player.getMaximumHealth(), x, y);
@@ -247,6 +333,14 @@ public class GameRoom extends BasicGameState{
 		if(hosting){
 			go.render(g);
 		}
+		
+		carterpillarColor.render(g);
+		bodyColor.render(g);
+		canonColor.render(g);
+		
+		changeCarterpillarColor.render(g);
+		changeBodyColor.render(g);
+		changeCanonColor.render(g);
 	}
 
 	@Override
@@ -260,6 +354,14 @@ public class GameRoom extends BasicGameState{
 		if(hosting){
 			go.update(container);
 		}
+		
+		carterpillarColor.update(container);
+		bodyColor.update(container);
+		canonColor.update(container);
+		
+		changeCarterpillarColor.update(container);
+		changeBodyColor.update(container);
+		changeCanonColor.update(container);
 	}
 
 	@Override

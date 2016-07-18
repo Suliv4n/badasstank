@@ -1,9 +1,11 @@
 package fr.sulivan.badasstank.mob.tank;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
 public class Body extends TankPiece implements Cloneable{
 	private Image image;
+	private Color color;
 	
 	public Body(String id, String name, Image image){
 		super(id, name);
@@ -30,10 +32,16 @@ public class Body extends TankPiece implements Cloneable{
 	}
 	
 	public void setColor(float r, float g, float b){
+		color = new Color(r,g,b);
+		
 		image.setColor(0, r, g, b);
 		image.setColor(1, r, g, b);
 		image.setColor(2, r, g, b);
 		image.setColor(3, r, g, b);
+	}
+	
+	public Color getColor(){
+		return color;
 	}
 	
 	@Override

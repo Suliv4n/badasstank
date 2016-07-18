@@ -1,6 +1,7 @@
 package fr.sulivan.badasstank.mob.tank;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.SpriteSheet;
 
 public class Carterpillar extends TankPiece implements Cloneable{
@@ -9,6 +10,7 @@ public class Carterpillar extends TankPiece implements Cloneable{
 	private SpriteSheet spritesheet;
 	private double speed;
 	private double speedRotation;
+	private Color color;
 	
 	public Carterpillar(String id, String name, SpriteSheet spritesheet, double speed, double speedRotation){
 		super(id, name);
@@ -47,6 +49,8 @@ public class Carterpillar extends TankPiece implements Cloneable{
 	}
 	
 	public void setColor(float r, float g, float b){
+		color = new Color(r,g,b);
+		
 		for(int i = 0; i<animation.getFrameCount(); i++){
 			animation.getImage(i).setColor(0, r, g, b);
 			animation.getImage(i).setColor(1, r, g, b);
@@ -77,5 +81,9 @@ public class Carterpillar extends TankPiece implements Cloneable{
 		}
 		
 		return clone;
+	}
+
+	public Color getColor() {
+		return color;
 	}
 }

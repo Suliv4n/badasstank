@@ -87,18 +87,26 @@ public class ColorPickerGUI extends PopupGUI{
 	}
 	
 	public void update(GameContainer container){
-		super.update(container);
-		
-		redRange.update(container);
-		greenRange.update(container);
-		blueRange.update(container);
-		
-		buttonCancel.update(container);
-		buttonValid.update(container);
+		if(isOpen()){
+			super.update(container);
+			
+			redRange.update(container);
+			greenRange.update(container);
+			blueRange.update(container);
+			
+			buttonCancel.update(container);
+			buttonValid.update(container);
+		}
 	}
 
 	public Color getColor(){
 		return new Color(redRange.getIntValue(), greenRange.getIntValue(), blueRange.getIntValue());
+	}
+	
+	public void setColor(Color color){
+		redRange.setValue(color.getRed());
+		greenRange.setValue(color.getGreen());
+		blueRange.setValue(color.getBlue());
 	}
 	
 	public void setOnValidate(Runnable action){
