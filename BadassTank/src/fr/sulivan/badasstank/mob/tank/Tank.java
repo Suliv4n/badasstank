@@ -248,15 +248,18 @@ public class Tank {
 
 	
 	public void setBody(Body body) {
+		body.setColor(this.body.color.r, this.body.color.g, this.body.color.b);
 		this.body = body;
 	}
 	
 	public void setCanon(Canon canon) {
+		canon.setColor(this.canon.color.r, this.canon.color.g, this.canon.color.b);
 		this.canon = canon;
 	}
 
-	public void setCartepillar(Carterpillar cartepillar) {
-		this.carterpillar = cartepillar;
+	public void setCartepillar(Carterpillar carterpillar) {
+		carterpillar.setColor(this.carterpillar.color.r, this.carterpillar.color.g, this.carterpillar.color.b);
+		this.carterpillar = carterpillar;
 	}
 	
 	public String getCarterpillarId() {

@@ -22,7 +22,6 @@ public class Canon extends TankPiece implements Cloneable {
 	private int centerX;
 	private int centerY;
 	
-	private Color color;
 
 	public Canon(String id, String name, Image image, int centerX, int centerY, Image bulletImage, ParticleSystem particles, float speedBullet, int range, int power, int cooldown){
 		super(id, name);

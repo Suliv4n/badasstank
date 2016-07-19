@@ -10,7 +10,6 @@ public class Carterpillar extends TankPiece implements Cloneable{
 	private SpriteSheet spritesheet;
 	private double speed;
 	private double speedRotation;
-	private Color color;
 	
 	public Carterpillar(String id, String name, SpriteSheet spritesheet, double speed, double speedRotation){
 		super(id, name);
@@ -49,7 +48,7 @@ public class Carterpillar extends TankPiece implements Cloneable{
 	}
 	
 	public void setColor(float r, float g, float b){
-		color = new Color(r,g,b);
+		super.color = new Color(r,g,b);
 		
 		for(int i = 0; i<animation.getFrameCount(); i++){
 			animation.getImage(i).setColor(0, r, g, b);

@@ -56,6 +56,21 @@ public class Event {
 	public int getIntParameter(String name) {
 		return Integer.parseInt(parameters.get(name));
 	}
+	
+	public int[] getArrayIntParameter(String name) {
+		String serialized = parameters.get(name);
+		if(serialized != null){
+			String[] elements = serialized.split(",");
+			int[] res = new int[elements.length];
+
+			for(int i=0; i<elements.length;i++){
+				res[i] = Integer.parseInt(elements[i]);
+			}
+			
+			return res;
+		}
+		return null;
+	}
 
 	public HashMap<String, String> getParameters() {
 		return parameters;

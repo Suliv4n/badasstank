@@ -190,6 +190,7 @@ public class GameRoom extends BasicGameState{
 			player.getCarterpillar().setColor(color.r, color.g, color.b);
 			changeCarterpillarColor.setColor(color);
 			carterpillarColor.close();
+			sendChangeColor("carterpillar", color);
 		});
 		
 		bodyColor = new ColorPickerGUI(container, "Body color", 
@@ -204,6 +205,7 @@ public class GameRoom extends BasicGameState{
 			player.getBody().setColor(color.r, color.g, color.b);
 			changeBodyColor.setColor(color);
 			bodyColor.close();
+			sendChangeColor("body", color);
 		});
 		
 		canonColor = new ColorPickerGUI(container, "Canon color", 
@@ -218,6 +220,7 @@ public class GameRoom extends BasicGameState{
 			player.getCanon().setColor(color.r, color.g, color.b);
 			changeCanonColor.setColor(color);
 			canonColor.close();
+			sendChangeColor("canon", color);
 		});
 		
 		changeCarterpillarColor = new ColoredBullButton(10, player.getCarterpillar().getColor());
@@ -228,7 +231,6 @@ public class GameRoom extends BasicGameState{
 			carterpillarColor.open();
 			canonColor.close();
 			bodyColor.close();
-			
 			carterpillarColor.setColor(player.getCarterpillar().getColor());
 		});
 		
@@ -250,6 +252,7 @@ public class GameRoom extends BasicGameState{
 			canonColor.setColor(player.getCanon().getColor());
 		});
 	}
+
 
 
 	@Override
@@ -298,7 +301,6 @@ public class GameRoom extends BasicGameState{
 			playerY += (position % boxNumberByColumn) * boxDimension;
 			
 			
-			g.drawString(players.get(position).getRemoteKey()+"", playerX + 20, playerY + 20);
 			players.get(position).render(playerX, playerY);
 		}
 		
@@ -398,7 +400,6 @@ public class GameRoom extends BasicGameState{
 			}
 			
 			if(adding){
-				System.out.println(e.getSource());
 				//Notification au client qu'il a bien été ajouté au serveur
 				if(server.send("joinstatus status=0 message=ok position=" + position + " key=" + e.getKey(), e.getSource())){
 					//Envoie des infos des autres joueurs au nouveau client + envoie des infos du nouveau client aux autres clients
@@ -406,12 +407,18 @@ public class GameRoom extends BasicGameState{
 	
 						Player p = players.get(pos);
 						HashMap<String, String> parameters = new HashMap<String, String>();
+						Color bodyColor = p.getBody().getColor();
+						Color carterpillarColor = p.getCarterpillar().getColor();
+						Color canonColor = p.getCanon().getColor();
 						
 						parameters.put("position", String.valueOf(pos));
 						parameters.put("carterpillar", p.getCarterpillarId());
 						parameters.put("canon", p.getCanonId());
 						parameters.put("body", p.getCanonId());
 						parameters.put("name", p.getName());
+						parameters.put("bodycolor", String.join(",", new String[]{bodyColor.getRed()+"",bodyColor.getGreen()+"",bodyColor.getBlue()+""}));
+						parameters.put("carterpillarcolor", String.join(",", new String[]{carterpillarColor.getRed()+"",carterpillarColor.getGreen()+"",carterpillarColor.getBlue()+""}));
+						parameters.put("canoncolor", String.join(",", new String[]{canonColor.getRed()+"",canonColor.getGreen()+"",canonColor.getBlue()+""}));
 						
 						//Si le joueur est le hosteur alors il n'a pas de clé.
 						if(pos.equals(currentPlayerPosition)){
@@ -463,19 +470,37 @@ public class GameRoom extends BasicGameState{
 			
 		});
 		
+		//------SETCOLOR---------
+		/*
+		 * When a player change one og his tank piece color
+		 */
+		server.on("setcolor", e -> {
+			String piece = e.getParameter("piece");
+			int position = e.getIntParameter("position");
+			int[] colorComponents = e.getArrayIntParameter("color");
+			
+			setPlayerPieceColor(position, piece, colorComponents);
+			
+			server.broadcast("setcolor", e.getParameters(), e.getSource());
+			
+		});
+		
 		this.hosting = true;
 	}
 	
 	public Body getBodyFromId(String id){
-		return (Body)bodiesData.stream().filter(b -> b.getId().equals(id)).toArray()[0];
+		Body body = (Body)bodiesData.stream().filter(b -> b.getId().equals(id)).toArray()[0];
+		return (Body)body.clone();
 	}
 	
 	public Carterpillar getCarterpillarFromId(String id){
-		return (Carterpillar)carterpillarsData.stream().filter(c -> c.getId().equals(id)).toArray()[0];
+		Carterpillar carterpillar = (Carterpillar)carterpillarsData.stream().filter(c -> c.getId().equals(id)).toArray()[0];
+		return (Carterpillar)carterpillar.clone();
 	}
 	
 	public Canon getCanonFromId(String id){
-		return (Canon)canonsData.stream().filter(c -> c.getId().equals(id)).toArray()[0];
+		Canon canon = (Canon)canonsData.stream().filter(c -> c.getId().equals(id)).toArray()[0];
+		return (Canon)canon.clone();
 	}
 
 	public void configureClient(Client client) {
@@ -490,6 +515,11 @@ public class GameRoom extends BasicGameState{
 			String name = e.getParameter("name");
 			int position = e.getIntParameter("position");
 			String key = e.getParameter("key");
+			int[] bodyColor = e.getArrayIntParameter("bodycolor");
+			int[] carterpillarColor = e.getArrayIntParameter("carterpillarcolor");
+			int[] canonColor = e.getArrayIntParameter("canoncolor");
+			
+
 			
 			Player addingPlayer = new Player(
 					getCarterpillarFromId(carterpillarId), 
@@ -501,6 +531,10 @@ public class GameRoom extends BasicGameState{
 			addingPlayer.setRemoteKey(key);
 			
 			players.put(position, addingPlayer);
+			
+			setPlayerPieceColor(position, "body", bodyColor);
+			setPlayerPieceColor(position, "carterpillar", carterpillarColor);
+			setPlayerPieceColor(position, "canon", canonColor);
 		});
 		
 		client.on("setpiece", e -> {
@@ -527,6 +561,14 @@ public class GameRoom extends BasicGameState{
 			players.removeFromRemoteKey(key);
 		});
 		
+		client.on("setcolor", e -> {
+			String piece = e.getParameter("piece");
+			int position = e.getIntParameter("position");
+			int[] colorComponents = e.getArrayIntParameter("color");
+			
+			setPlayerPieceColor(position,  piece, colorComponents);
+
+		});
 	}
 
 
@@ -542,5 +584,30 @@ public class GameRoom extends BasicGameState{
 
 	public void setRemoteKey(String key) {
 		players.get(currentPlayerPosition).setRemoteKey(key);
+	}
+	
+	private void sendChangeColor(String piece, Color color) {
+		String message = "setcolor piece=" + piece + " position=" + currentPlayerPosition + " color=" + color.getRed() + "," + color.getGreen() + "," + color.getBlue();
+		
+		if(hosting){
+			server.broadcast(message);
+		}
+		else{
+			client.send(message);
+		}
+	}
+	
+	private void setPlayerPieceColor(int position, String piece, int[] colorComponents){
+		Color color = new Color(colorComponents[0], colorComponents[1], colorComponents[2]);
+		
+		if(piece.equals("body")){
+			players.get(position).getBody().setColor(color.r, color.g, color.b);
+		}
+		else if(piece.equals("carterpillar")){
+			players.get(position).getCarterpillar().setColor(color.r, color.g, color.b);
+		}
+		else if(piece.equals("canon")){
+			players.get(position).getCanon().setColor(color.r, color.g, color.b);
+		}
 	}
 }
