@@ -43,6 +43,7 @@ public class Tank {
 	public Tank(Carterpillar carterpillar, Canon canon, Color color, Body body, String name)
 	{
 		
+		
 		this.name = name;
 		
 		this.carterpillar = carterpillar; 
@@ -146,13 +147,24 @@ public class Tank {
 	}
 	
 	
-	public void setCoordinates(int x, int y) {
-		hitbox.setX(x);
-		hitbox.setY(y);
+	public void setCoordinates(int x, int y, boolean absolute) {
+		if(absolute){
+			hitbox.setX(x);
+			hitbox.setY(y);
+		}
+		else{
+			hitbox.setX(0);
+			hitbox.setY(0);
+		}
 		this.x = x;
 		this.y = y;
 		this.realX = x;
 		this.realY = y;
+	}
+	
+	public void setHitbox(Player referer) {
+		hitbox.setX(x - referer.getX());
+		hitbox.setY(y - referer.getY());
 	}
 	
 	public Hitbox getHitbox() {

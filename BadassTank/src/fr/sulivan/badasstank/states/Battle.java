@@ -1,5 +1,6 @@
 package fr.sulivan.badasstank.states;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,14 +59,57 @@ public class Battle extends BasicGameState{
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		// TODO Auto-generated method stub
+		
+		map.drawLayer(0);
+		
+		for(int pos : players.keySet()){
+			players.get(pos).render(pos == currentPlayerPosition, g, map);
+			//players.get(pos).getHitbox().draw(new Color(0f, 0f, 0.5f, 0.5f), g);
+		}
+		
+		//map.getHitbox().draw(new Color(0.5f, 0f, 0f, 0.5f), g);
 		
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
+		Player player = players.get(currentPlayerPosition);
 		
+		int mapX = Configuration.SCREEN_WIDTH / 2 - player.getX();
+		int mapY = Configuration.SCREEN_HEIGHT / 2 - player.getY();
+		
+		map.setDisplayedCoordinate(mapX, mapY);
+		
+		Input in = container.getInput();
+		
+		//Gestion mouvement
+		if(in.isKeyDown(Input.KEY_Z)){
+			player.setMoving(true, false);
+		}
+		else if(in.isKeyDown(Input.KEY_S)){
+			player.setMoving(true, true);
+		}
+		else{
+			player.setMoving(false, false);
+		}
+		
+		//Gestion rotation
+		if(in.isKeyDown(Input.KEY_Q)){
+			player.setRotation(player.getRotation() + player.getSpeedRotation());
+		}
+		else if(in.isKeyDown(Input.KEY_D)){
+			player.setRotation(player.getRotation() - player.getSpeedRotation());
+		}
+		
+		//Gestion FullScreen
+		if(in.isKeyDown(Input.KEY_F1)){
+			BadassTank.toggleFullScreen();
+		}
+		
+		//Rotation du canon en fonction 
+		player.getCanon().setRotation(Configuration.SCREEN_WIDTH / 2, Configuration.SCREEN_HEIGHT / 2 , in.getAbsoluteMouseX(), in.getAbsoluteMouseY());
+		player.update(map, true);
 	}
 
 	@Override
@@ -82,13 +126,26 @@ public class Battle extends BasicGameState{
 		this.client = client;
 		hosting = false;
 	}
-	
-	public void setPlayers(PlayersSet players){
-		this.players = players;
-	}
-	
-	public void setMap(Map map){
+
+
+	public void setEnvironment(PlayersSet players, Map map, int position) {
 		this.map = map;
+		this.players = players;
+		this.currentPlayerPosition = position;
+		
+		ArrayList<Point> slots = map.getSlotsLocation();
+		
+		for(int i=0; i<slots.size(); i++){
+			Player p = players.get(i);
+			if(p != null){
+				p.setCoordinates(slots.get(i).x, slots.get(i).y, i!=currentPlayerPosition);
+				map.registerPlayer(p);
+			}
+		}
+		
+		for(int pos : players.keySet()){
+			players.get(pos).setHitbox(players.get(currentPlayerPosition));
+		}
 	}
 
 }

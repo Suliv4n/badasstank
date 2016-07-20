@@ -93,6 +93,7 @@ public class Canon extends TankPiece implements Cloneable {
 		try {
 			clone = (Canon) super.clone();
 			clone.image = this.image.copy();
+			clone.image.setCenterOfRotation(centerX, centerY);
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}

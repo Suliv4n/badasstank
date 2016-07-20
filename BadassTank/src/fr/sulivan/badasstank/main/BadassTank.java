@@ -71,13 +71,16 @@ public class BadassTank extends StateBasedGame
 		serverConfiguration = new ServerConfiguration();
 		joinConfiguration = new JoinConfiguration();
 		gameRoom = new GameRoom();
+		battle = new Battle();
 		
+
 		addState(titleScreen);
-		addState(sandbox);
 		addState(tankBuilding);
 		addState(serverConfiguration);
 		addState(joinConfiguration);
 		addState(gameRoom);
+		addState(sandbox);
+		addState(battle);
 	}
 	
 	public static void toggleFullScreen() throws SlickException{
@@ -148,8 +151,8 @@ public class BadassTank extends StateBasedGame
 		//TODO sélection map
 		try {
 			battle.configureServer(server);
-			battle.setPlayers(players);
-			battle.setMap(new Map(new TiledMap("resources/map/test.tmx")));
+			Map map = new Map(new TiledMap("resources/map/test.tmx"));
+			battle.setEnvironment(players, map, position);
 			server.broadcast("battlestart");
 		} catch (SlickException e) {
 			e.printStackTrace();

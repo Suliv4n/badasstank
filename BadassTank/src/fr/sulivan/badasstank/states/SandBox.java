@@ -137,7 +137,7 @@ public class SandBox extends BasicGameState{
 		player1 = new Player(carterpillar1, canon1, new Color(20,150,20), body1, "Sulivan");
 		player2 = new Player(carterpillar2, canon2, new Color(20,20,150), body2, "Joueur 2");
 		
-		player2.setCoordinates(100, 0);
+		player2.setCoordinates(100, 0, true);
 		
 		
 		this.map = new Map(new TiledMap("resources/map/test.tmx"));

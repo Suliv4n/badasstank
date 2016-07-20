@@ -7,5 +7,5 @@ public class ID {
 	public static final int  SERVER_CONFIGURATION = 4;
 	public static final int  GAME_ROOM = 5;
 	public static final int  JOIN_CONFIGURATION = 6;
-	public static final int  BATTLE = 6;
+	public static final int  BATTLE = 7;
 }

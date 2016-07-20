@@ -1,5 +1,6 @@
 package fr.sulivan.badasstank.map;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import org.newdawn.slick.tiled.TiledMap;
@@ -30,13 +31,14 @@ public class Map {
 					boolean collision = tiledMap.getTileProperty(tileID, "collision", "false").equalsIgnoreCase("true");
 					
 					if(collision){
-						hitbox.addShape(PolygonFactory.createRectangle(x*tiledMap.getTileWidth(), y*tiledMap.getTileHeight(), tiledMap.getWidth(), tiledMap.getHeight()));
+						hitbox.addShape(PolygonFactory.createRectangle(x*tiledMap.getTileWidth(), y*tiledMap.getTileHeight(), tiledMap.getTileWidth(), tiledMap.getTileHeight()));
 						break;
 					}
 
 				}
 			}
 		}
+		
 	}
 	
 	public TiledMap getTiledMap(){
@@ -77,5 +79,14 @@ public class Map {
 	
 	public ArrayList<Player> getPlayers() {
 		return players;
+	}
+	
+	public ArrayList<Point> getSlotsLocation(){
+		
+		ArrayList<Point> slots = new ArrayList<Point>();
+		for(int i=0;i<tiledMap.getObjectCount(0); i++){
+			slots.add(new Point(tiledMap.getObjectX(0, i), tiledMap.getObjectY(0, i)));
+		}
+		return slots;
 	}
 }
