@@ -11,6 +11,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.NetworkException;
+import fr.sulivan.badasstank.network.NetworkPoint;
 import fr.sulivan.badasstank.network.Server;
 import fr.sulivan.badasstank.states.Battle;
 import fr.sulivan.badasstank.states.GameRoom;
@@ -146,20 +147,25 @@ public class BadassTank extends StateBasedGame
 		}
 	}
 
-	public void startBattle(Server server, PlayersSet players, int position) {
+	public void startBattle(NetworkPoint networkPoint, PlayersSet players, int position) {
 		
 		//TODO sélection map
 		try {
-			battle.configureServer(server);
+			if(networkPoint instanceof Server){
+				battle.configureServer((Server)networkPoint);
+			}
+			else{
+				battle.configureClient((Client)networkPoint);
+			}
 			Map map = new Map(new TiledMap("resources/map/test.tmx"));
 			battle.setEnvironment(players, map, position);
-			server.broadcast("battlestart");
+			
+			game.enterState(ID.BATTLE);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-		
-		game.enterState(ID.BATTLE);
 	}
+
 
 
 }

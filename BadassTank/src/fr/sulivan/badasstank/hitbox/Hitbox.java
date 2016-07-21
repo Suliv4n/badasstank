@@ -64,7 +64,9 @@ public class Hitbox {
 	public void setX(float x) {
 		for(Shape s : shapes){
 			s.setX(x);
+			System.out.println("==>" + s.getX());
 		}
+		
 	}
 	
 	public void setY(float y) {

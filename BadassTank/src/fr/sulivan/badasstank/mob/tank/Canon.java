@@ -58,6 +58,11 @@ public class Canon extends TankPiece implements Cloneable {
 		image.setRotation(((int)angle + 90) % 360);
 	}
 	
+
+	public void setRotation(float angle) {
+		image.setRotation(angle);
+	}
+	
 	public void setColor(float r, float g, float b){
 		color = new Color(r,g,b);
 		image.setColor(0, r, g, b);
@@ -107,5 +112,9 @@ public class Canon extends TankPiece implements Cloneable {
 	
 	public Color getColor() {
 		return color;
+	}
+
+	public float getRotation() {
+		return image.getRotation();
 	}
 }

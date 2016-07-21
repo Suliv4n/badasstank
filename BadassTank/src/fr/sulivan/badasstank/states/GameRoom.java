@@ -170,6 +170,7 @@ public class GameRoom extends BasicGameState{
 		go.setX(400);
 		go.setY(Configuration.SCREEN_HEIGHT - go.getHeight() - 10);
 		go.setOnClick(() -> {
+			server.broadcast("go");
 			BadassTank.game().startBattle(server, players, currentPlayerPosition);
 		});
 		
@@ -567,7 +568,10 @@ public class GameRoom extends BasicGameState{
 			int[] colorComponents = e.getArrayIntParameter("color");
 			
 			setPlayerPieceColor(position,  piece, colorComponents);
-
+		});
+		
+		client.on("go", e -> {
+			BadassTank.game().startBattle(client, players, currentPlayerPosition);
 		});
 	}
 

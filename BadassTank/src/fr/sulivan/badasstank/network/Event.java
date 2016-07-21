@@ -57,6 +57,10 @@ public class Event {
 		return Integer.parseInt(parameters.get(name));
 	}
 	
+	public float getFloatParameter(String name) {
+		return Float.parseFloat(parameters.get(name));
+	}
+	
 	public int[] getArrayIntParameter(String name) {
 		String serialized = parameters.get(name);
 		if(serialized != null){
@@ -83,4 +87,5 @@ public class Event {
 	public String getKey(){
 		return key;
 	}
+
 }

@@ -163,8 +163,15 @@ public class Tank {
 	}
 	
 	public void setHitbox(Player referer) {
-		hitbox.setX(x - referer.getX());
-		hitbox.setY(y - referer.getY());
+		hitbox.setX(0);
+		hitbox.setY(0);
+	}
+	
+	
+	public void setHitbox(int x, int y) {
+		hitbox.setX(1);
+		hitbox.setY(1);
+		System.out.println( x + " " + y);
 	}
 	
 	public Hitbox getHitbox() {
