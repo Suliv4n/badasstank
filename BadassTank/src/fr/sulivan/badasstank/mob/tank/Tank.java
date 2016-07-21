@@ -122,7 +122,7 @@ public class Tank {
 		carterpillar.setRotation(angle);
 		rotation = angle % 360;
 		
-		hitbox.setRotation(Math.toRadians(rotation));
+		//hitbox.setRotation(Math.toRadians(rotation));
 	}
 	
 	public double getRotation(){
@@ -149,12 +149,12 @@ public class Tank {
 	
 	public void setCoordinates(int x, int y, boolean absolute) {
 		if(absolute){
-			hitbox.setX(x);
-			hitbox.setY(y);
+			hitbox.setX(x-hitboxWidth()/2);
+			hitbox.setY(y-hitboxWidth()/2);
 		}
 		else{
-			hitbox.setX(0);
-			hitbox.setY(0);
+			hitbox.setX(Configuration.SCREEN_WIDTH/2-hitboxWidth()/2);
+			hitbox.setY(Configuration.SCREEN_HEIGHT/2-hitboxWidth()/2);
 		}
 		this.x = x;
 		this.y = y;
@@ -163,16 +163,21 @@ public class Tank {
 	}
 	
 	public void setHitbox(Player referer) {
-		hitbox.setX(0);
-		hitbox.setY(0);
+		//hitbox.setX(x - referer.getX());
+		//hitbox.setY(y - referer.getY());
 	}
 	
-	
+	private int hitboxWidth(){
+		return body.getWidth() + carterpillar.getWidth();
+	}
+
 	public void setHitbox(int x, int y) {
-		hitbox.setX(1);
-		hitbox.setY(1);
-		System.out.println( x + " " + y);
+		
+		hitbox.setX(x - hitboxWidth()/2);
+		hitbox.setY(y - hitboxWidth()/2);
+		
 	}
+
 	
 	public Hitbox getHitbox() {
 		return hitbox;
