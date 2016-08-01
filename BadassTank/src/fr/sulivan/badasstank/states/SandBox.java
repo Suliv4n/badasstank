@@ -243,7 +243,7 @@ public class SandBox extends BasicGameState{
 		
 		ArrayList<Displayer> disposed = new ArrayList<Displayer>();
 		for(Displayer d : displayers){
-			d.update(delta, this);
+			//d.update(delta, this);
 			if(d.isDisposed()){
 				disposed.add(d);
 			}

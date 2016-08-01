@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.particles.ParticleSystem;
 
 import fr.sulivan.badasstank.hitbox.Hitbox;
+import fr.sulivan.badasstank.states.Battle;
 import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.util.PolygonFactory;
 
@@ -59,8 +60,8 @@ public class BulletDisplayer extends Displayer{
 	}
 	
 	@Override
-	public void update(int delta, SandBox game) {
-		super.update(delta, game);
+	public void update(int delta, Battle context) {
+		super.update(delta, context);
 		if(particles != null){
 			particles.update(delta);
 		}
@@ -70,7 +71,7 @@ public class BulletDisplayer extends Displayer{
 		
 		distance += Math.sqrt(direction.x * direction.x + direction.y * direction.y);
 		
-		if(game.getMap().getHitbox().intersects(hitbox)){
+		if(context.getMap().getHitbox().intersects(hitbox)){
 			dispose();
 		}
 		

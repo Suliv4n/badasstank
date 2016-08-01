@@ -2,6 +2,7 @@ package fr.sulivan.badasstank.states;
 
 import java.awt.Point;
 import java.util.ArrayList;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -9,9 +10,12 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
+import fr.sulivan.badasstank.mob.displayer.BulletDisplayer;
+import fr.sulivan.badasstank.mob.displayer.Displayer;
 import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.network.Client;
@@ -31,9 +35,12 @@ public class Battle extends BasicGameState{
 	
 	private String lastUpdate;
 	
+	private ArrayList<BulletDisplayer> bullets = new ArrayList<BulletDisplayer>();
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
+		bullets = new ArrayList<BulletDisplayer>();
 
 	}
 
@@ -53,6 +60,11 @@ public class Battle extends BasicGameState{
 		
 		map.getHitbox().draw(new Color(0.5f, 0f, 0f, 0.5f), g);
 		g.drawString("Curseur : " + cursorX + " ; " + cursorY, 0, 20);
+		
+		for(BulletDisplayer b : bullets){
+			b.render( b.getX() + map.getX(),  b.getY() + map.getY() );
+		}
+		
 	}
 	
 	private String getMessageCurrentState(){
@@ -117,6 +129,33 @@ public class Battle extends BasicGameState{
 			}
 			lastUpdate = getMessageCurrentState();
 		}
+		
+		if(in.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
+			int dx = in.getAbsoluteMouseX() - map.getX();
+			int dy = in.getAbsoluteMouseY() - map.getY();
+			if(hosting){
+				server.broadcast("fire position="+currentPlayerPosition+" dx="+dx+" dy="+dy);
+			}
+			else{
+				client.send("fire position="+currentPlayerPosition+" dx="+dx+" dy="+dy);
+			}
+			
+			//TODO confirmation serveur ?
+			bullets.add((BulletDisplayer) player.fire(player.getX(), player.getY(), in.getAbsoluteMouseX() - map.getX(), in.getAbsoluteMouseY() - map.getY()));
+		}
+		
+		//Update bullets
+		ArrayList<BulletDisplayer> toDispose = new ArrayList<BulletDisplayer>();
+		for(BulletDisplayer b : bullets){
+			b.update(delta, this);
+			if(b.isDisposed()){
+				toDispose.add(b);
+			}
+		}
+		
+		for(BulletDisplayer b : toDispose){
+			bullets.remove(b); 
+		}
 	}
 
 	@Override
@@ -139,6 +178,17 @@ public class Battle extends BasicGameState{
 			
 			server.broadcast("update", e.getParameters(), e.getSource());
 		});
+		
+		server.on("fire", e -> {
+			int position = e.getIntParameter("position");
+			int dx = e.getIntParameter("dx");
+			int dy = e.getIntParameter("dy");
+			
+			Player player = players.get(position);
+			bullets.add((BulletDisplayer) players.get(position).fire( player.getX(), player.getY(), dx, dy));
+			
+			server.broadcast("fire", e.getParameters(), e.getSource());
+		});
 	}
 	
 	public void configureClient(Client client){
@@ -155,6 +205,15 @@ public class Battle extends BasicGameState{
 			
 			updatePlayer(players.get(position), x, y, angle, angleRotation);
 			
+		});
+		
+		client.on("fire", e -> {
+			int position = e.getIntParameter("position");
+			int dx = e.getIntParameter("dx");
+			int dy = e.getIntParameter("dy");
+			
+			Player player = players.get(position);
+			bullets.add((BulletDisplayer) players.get(position).fire( player.getX(), player.getY(), dx, dy));
 		});
 	}
 
@@ -176,13 +235,16 @@ public class Battle extends BasicGameState{
 			Player p = players.get(i);
 			if(p != null){
 				p.setCoordinates(slots.get(i).x, slots.get(i).y, i!=currentPlayerPosition);
+				if(i!=currentPlayerPosition){
+					p.setHitbox(map.getX() + slots.get(i).x, map.getY() + slots.get(i).y);
+				}
 				map.registerPlayer(p);
 			}
 		}
-		
-		for(int pos : players.keySet()){
-			players.get(pos).setHitbox(players.get(currentPlayerPosition));
-		}
+	}
+
+	public Map getMap() {
+		return map;
 	}
 
 }
