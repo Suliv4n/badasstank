@@ -5,27 +5,32 @@ import org.newdawn.slick.Graphics;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.mob.tank.Tank;
+import fr.sulivan.badasstank.states.Battle;
 import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.util.TypeBarre;
 import fr.sulivan.badasstank.util.gui.BarUI;
 
 public class HUD {
 	
-	private SandBox game;
+	private Battle context;
 	private BarUI healthPoints;
 	
-	public HUD(SandBox game){
-		this.game = game;
-		healthPoints = new BarUI(Configuration.HEALTH_BAR_COLOR, Color.black, 100, 15, game.getPlayer().getHealth(), game.getPlayer().getMaximumHealth(), TypeBarre.LEFT_TO_RIGHT,true, Configuration.BORDER_COLOR);
+	public HUD(Battle context){
+		this.context = context;
+		healthPoints = new BarUI(Configuration.HEALTH_BAR_COLOR, new Color(200,200,200), 300, 4, context.getPlayer().getHealth(), context.getPlayer().getMaximumHealth(), TypeBarre.LEFT_TO_RIGHT);
+		
+		
 	}
 	
 	public void render(Graphics g){
-		healthPoints.render(g, 20, 20);
+		int x = Configuration.SCREEN_WIDTH / 2 - healthPoints.getWidth() / 2;
+		healthPoints.render(g, Configuration.SCREEN_WIDTH / 2 - healthPoints.getWidth() / 2, 20);
 		g.setColor(Color.white);
-		g.drawString(game.getPlayer().getHealth() + "/" + game.getPlayer().getMaximumHealth(), 22, 18);
+		g.drawString(context.getPlayer().getHealth() + "/" + context.getPlayer().getMaximumHealth(), x, 0);
+		g.drawString(context.getPlayer().getName(), x + healthPoints.getWidth() - g.getFont().getWidth(context.getPlayer().getName()), 0);
 	}
 	
 	public void update(){
-		healthPoints.setCurrent(game.getPlayer().getHealth());
+		healthPoints.setCurrent(context.getPlayer().getHealth());
 	}
 }

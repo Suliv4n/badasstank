@@ -213,5 +213,9 @@ public class BarUI
 	public void setCurrent(int current){
 		this.current = current;
 	}
+
+	public int getWidth() {
+		return width +( border ? 2 : 0);
+	}
 	
 }

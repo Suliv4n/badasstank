@@ -157,7 +157,7 @@ public class SandBox extends BasicGameState{
 		}
 		displayers = new ArrayList<Displayer>();
 		
-		hud = new HUD(this);
+		//hud = new HUD(this);
 	}
 
 	@Override

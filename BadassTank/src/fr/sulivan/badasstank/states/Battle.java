@@ -12,10 +12,10 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import fr.sulivan.badasstank.config.Configuration;
+import fr.sulivan.badasstank.hud.HUD;
 import fr.sulivan.badasstank.main.BadassTank;
 import fr.sulivan.badasstank.map.Map;
 import fr.sulivan.badasstank.mob.displayer.BulletDisplayer;
-import fr.sulivan.badasstank.mob.displayer.Displayer;
 import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.network.Client;
@@ -37,19 +37,22 @@ public class Battle extends BasicGameState{
 	
 	private ArrayList<BulletDisplayer> bullets = new ArrayList<BulletDisplayer>();
 	
+	private HUD hud;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		bullets = new ArrayList<BulletDisplayer>();
-
+	}
+	
+	@Override
+	public void enter(GameContainer container, StateBasedGame game){
+		hud = new HUD(this);
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
-		int cursorX = container.getInput().getAbsoluteMouseX();
-		int cursorY = container.getInput().getAbsoluteMouseY();
-		
 		
 		map.drawLayer(0);
 		
@@ -59,12 +62,13 @@ public class Battle extends BasicGameState{
 		}
 		
 		map.getHitbox().draw(new Color(0.5f, 0f, 0f, 0.5f), g);
-		g.drawString("Curseur : " + cursorX + " ; " + cursorY, 0, 20);
+		//g.drawString("Curseur : " + cursorX + " ; " + cursorY, 0, 20);
 		
 		for(BulletDisplayer b : bullets){
 			b.render( b.getX() + map.getX(),  b.getY() + map.getY() );
 		}
 		
+		hud.render(g);
 	}
 	
 	private String getMessageCurrentState(){
@@ -156,6 +160,8 @@ public class Battle extends BasicGameState{
 		for(BulletDisplayer b : toDispose){
 			bullets.remove(b); 
 		}
+		
+		hud.update();
 	}
 
 	@Override
@@ -245,6 +251,10 @@ public class Battle extends BasicGameState{
 
 	public Map getMap() {
 		return map;
+	}
+
+	public Player getPlayer() {
+		return players.get(currentPlayerPosition);
 	}
 
 }
