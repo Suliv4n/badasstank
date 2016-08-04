@@ -2,7 +2,6 @@ package fr.sulivan.badasstank.mob.tank;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Circle;
 
 import fr.sulivan.badasstank.config.Configuration;
@@ -258,7 +257,7 @@ public class Tank {
 	}
 	
 	public Displayer fire(int x1, int y1, int x2, int y2){
-		return canon.fire(x1, y1, x2, y2);
+		return canon.fire(this, x1, y1, x2, y2);
 	}
 	
 	public int getHealth(){
@@ -311,5 +310,13 @@ public class Tank {
 	
 	public Canon getCanon() {
 		return canon;
+	}
+	
+	public void updateHealth(int delta) {
+		setHealth(health + delta);
+	}
+	
+	public void setHealth(int health) {
+		this.health = Math.min(Math.max(0, health), getMaximumHealth());
 	}
 }

@@ -5,6 +5,8 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.particles.ParticleSystem;
 
 import fr.sulivan.badasstank.hitbox.Hitbox;
+import fr.sulivan.badasstank.mob.player.Player;
+import fr.sulivan.badasstank.mob.tank.Tank;
 import fr.sulivan.badasstank.states.Battle;
 import fr.sulivan.badasstank.states.SandBox;
 import fr.sulivan.badasstank.util.PolygonFactory;
@@ -21,8 +23,10 @@ public class BulletDisplayer extends Displayer{
 	
 	private int power;
 	
-	public BulletDisplayer(Image image, ParticleSystem particles, int x1, int y1 , int x2, int y2, float speed, int range, int power) {
-		super(x1, y1);
+
+	
+	public BulletDisplayer(Tank source, Image image, ParticleSystem particles, int x1, int y1 , int x2, int y2, float speed, int range, int power) {
+		super(x1, y1, source);
 		double hypo = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 		double angle = Math.acos((x1-x2) / hypo);
 		if(image != null){
@@ -76,7 +80,20 @@ public class BulletDisplayer extends Displayer{
 		}
 		
 		if(distance >= this.range){
-			super.dispose();
+			dispose();
 		}
+		
+		for(Player player : context.getMap().getPlayers()){
+			if(!player.equals(getSource()) && getHitbox().intersects(player.getHitbox())){
+				player.updateHealth(-getPower());
+				System.out.println("Touched");
+				dispose();
+			}
+		}
+	}
+
+
+	public int getPower() {
+		return power;
 	}
 }

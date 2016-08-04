@@ -52,13 +52,25 @@ public class PlayersSet {
 		return position;
 	}
 	
-	public void removeFromRemoteKey(String key) {
+	public Player removeFromRemoteKey(String key) {
 		for(Integer position : players.keySet()){
 			
 			if(players.get(position).getRemoteKey() != null && players.get(position).getRemoteKey().equals(key)){
-				players.remove(position);
-				break;
+				return players.remove(position);
 			}
 		}
+		
+		return null;
+	}
+
+	public int getPositionFromRemoteKey(String key) {
+		for(Integer position : players.keySet()){
+			
+			if(players.get(position).getRemoteKey() != null && players.get(position).getRemoteKey().equals(key)){
+				return position;
+			}
+		}
+		
+		return -1;
 	}
 }

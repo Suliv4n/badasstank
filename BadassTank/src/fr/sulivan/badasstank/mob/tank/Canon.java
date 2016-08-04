@@ -71,8 +71,8 @@ public class Canon extends TankPiece implements Cloneable {
 		image.setColor(3, r, g, b);
 	}
 	
-	public Displayer fire(int x1, int y1, int x2, int y2){
-			return new BulletDisplayer(getBulletImage(), getParticles(), x1, y1, x2, y2, getSpeedBullet(), this.range, this.power);
+	public Displayer fire(Tank source, int x1, int y1, int x2, int y2){
+			return new BulletDisplayer(source, getBulletImage(), getParticles(), x1, y1, x2, y2, getSpeedBullet(), this.range, this.power);
 	}
 	
 	//Bullet

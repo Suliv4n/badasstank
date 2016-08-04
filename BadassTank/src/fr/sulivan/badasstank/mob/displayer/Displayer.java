@@ -1,6 +1,7 @@
 package fr.sulivan.badasstank.mob.displayer;
 
 import fr.sulivan.badasstank.hitbox.Hitbox;
+import fr.sulivan.badasstank.mob.tank.Tank;
 import fr.sulivan.badasstank.states.Battle;
 import fr.sulivan.badasstank.states.SandBox;
 
@@ -15,9 +16,12 @@ public abstract class Displayer {
 	
 	protected Hitbox hitbox;
 	
-	public Displayer(float x, float y){
+	protected Tank source;
+	
+	public Displayer(float x, float y, Tank source){
 		this.x = x;
 		this.y = y;
+		this.source = source;
 	}
 	
 	public abstract void render(float f, float g);
@@ -56,5 +60,9 @@ public abstract class Displayer {
 
 	public Hitbox getHitbox() {
 		return hitbox;
+	}
+	
+	public Tank getSource() {
+		return source;
 	}
 }

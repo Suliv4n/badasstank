@@ -2,6 +2,7 @@ package fr.sulivan.badasstank.states;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -39,15 +40,24 @@ public class Battle extends BasicGameState{
 	
 	private HUD hud;
 	
+	private HashMap<Integer, Integer> healthBackUp;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		bullets = new ArrayList<BulletDisplayer>();
+		healthBackUp = new HashMap<Integer, Integer>();
 	}
 	
 	@Override
 	public void enter(GameContainer container, StateBasedGame game){
 		hud = new HUD(this);
+		if(hosting){
+			healthBackUp.clear();
+			for(Integer position : players.keySet()){
+				healthBackUp.put(position, players.get(position).getHealth());
+			}
+		}
 	}
 
 	@Override
@@ -80,6 +90,7 @@ public class Battle extends BasicGameState{
 		message += " y=" + player.getY();
 		message += " angle=" + player.getRotation();
 		message += " canonrotation=" + player.getCanon().getRotation();
+		message += " health=" + player.getHealth();
 		
 		return message;
 	}
@@ -144,14 +155,15 @@ public class Battle extends BasicGameState{
 				client.send("fire position="+currentPlayerPosition+" dx="+dx+" dy="+dy);
 			}
 			
-			//TODO confirmation serveur ?
 			bullets.add((BulletDisplayer) player.fire(player.getX(), player.getY(), in.getAbsoluteMouseX() - map.getX(), in.getAbsoluteMouseY() - map.getY()));
 		}
 		
 		//Update bullets
 		ArrayList<BulletDisplayer> toDispose = new ArrayList<BulletDisplayer>();
 		for(BulletDisplayer b : bullets){
+
 			b.update(delta, this);
+			
 			if(b.isDisposed()){
 				toDispose.add(b);
 			}
@@ -159,6 +171,15 @@ public class Battle extends BasicGameState{
 		
 		for(BulletDisplayer b : toDispose){
 			bullets.remove(b); 
+		}
+		
+		if(hosting){
+			for(int position : healthBackUp.keySet()){
+				if(healthBackUp.get(position) != players.get(position).getHealth()){
+					server.broadcast("health position="+position+" health="+players.get(position).getHealth());
+					healthBackUp.put(position, players.get(position).getHealth());
+				}
+			}
 		}
 		
 		hud.update();
@@ -170,6 +191,13 @@ public class Battle extends BasicGameState{
 	}
 	
 	public void configureServer(Server server){
+		server.setOnClientQuit(key -> {
+			int remove = players.getPositionFromRemoteKey(key);
+			map.unregisterPlayer(players.get(remove));
+			healthBackUp.remove(remove);
+			players.remove(remove);
+		});
+		
 		this.server = server;
 		hosting = true;
 		
@@ -221,6 +249,13 @@ public class Battle extends BasicGameState{
 			Player player = players.get(position);
 			bullets.add((BulletDisplayer) players.get(position).fire( player.getX(), player.getY(), dx, dy));
 		});
+		
+		client.on("health", e -> {
+			int position = e.getIntParameter("position");
+			int health = e.getIntParameter("health");
+			
+			players.get(position).setHealth(health);
+		});
 	}
 
 	private void updatePlayer(Player player, int x, int y, float angle, float angleRotation) {
@@ -256,5 +291,5 @@ public class Battle extends BasicGameState{
 	public Player getPlayer() {
 		return players.get(currentPlayerPosition);
 	}
-
+	
 }
