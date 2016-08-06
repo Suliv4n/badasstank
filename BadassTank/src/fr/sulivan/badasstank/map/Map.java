@@ -18,6 +18,7 @@ public class Map {
 	
 	private int displayedX = 0;
 	private int displayedY = 0;
+	private ArrayList<Point> slots;
 	
 	public Map(TiledMap tiledMap){
 		this.tiledMap = tiledMap;
@@ -81,12 +82,21 @@ public class Map {
 		return players;
 	}
 	
-	public ArrayList<Point> getSlotsLocation(){
-		
-		ArrayList<Point> slots = new ArrayList<Point>();
+	private void parseSlotsLocation(){
+		slots = new ArrayList<Point>();
 		for(int i=0;i<tiledMap.getObjectCount(0); i++){
 			slots.add(new Point(tiledMap.getObjectX(0, i), tiledMap.getObjectY(0, i)));
 		}
+	}
+	
+	public ArrayList<Point> getSlotsLocation(){
+		if(slots == null){
+			parseSlotsLocation();
+		}
 		return slots;
+	}
+
+	public Point getRandomSlotLocation() {
+		return getSlotsLocation().get((int)(Math.random() * getSlotsLocation().size()));
 	}
 }

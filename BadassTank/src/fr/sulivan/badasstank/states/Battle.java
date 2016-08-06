@@ -21,6 +21,7 @@ import fr.sulivan.badasstank.mob.player.Player;
 import fr.sulivan.badasstank.mob.player.PlayersSet;
 import fr.sulivan.badasstank.network.Client;
 import fr.sulivan.badasstank.network.Server;
+import fr.sulivan.badasstank.util.Timer;
 
 public class Battle extends BasicGameState{
 
@@ -42,11 +43,18 @@ public class Battle extends BasicGameState{
 	
 	private HashMap<Integer, Integer> healthBackUp;
 	
+	private Timer respawnTimer;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		bullets = new ArrayList<BulletDisplayer>();
 		healthBackUp = new HashMap<Integer, Integer>();
+		respawnTimer = new Timer(Configuration.MAXIMUM_TIME_BEFORE_RESPAWN);
+		respawnTimer.setOnFinish(() -> {
+			respawn();
+			respawnTimer.stop();
+		});
 	}
 	
 	@Override
@@ -64,6 +72,8 @@ public class Battle extends BasicGameState{
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 		
+
+		
 		map.drawLayer(0);
 		
 		for(int pos : players.keySet()){
@@ -78,6 +88,10 @@ public class Battle extends BasicGameState{
 			b.render( b.getX() + map.getX(),  b.getY() + map.getY() );
 		}
 		
+		if(getPlayer().getHealth() == 0){
+			g.setColor(new Color(0f,0f,0f,0.5f));
+			g.fillRect(0, 0, Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT);
+		}
 		hud.render(g);
 	}
 	
@@ -183,6 +197,10 @@ public class Battle extends BasicGameState{
 		}
 		
 		hud.update();
+		if(getPlayer().getHealth() == 0){
+			respawnTimer.start();
+			respawnTimer.update(delta);
+		}
 	}
 
 	@Override
@@ -223,6 +241,13 @@ public class Battle extends BasicGameState{
 			
 			server.broadcast("fire", e.getParameters(), e.getSource());
 		});
+		
+		server.on("respawn", e -> {
+			int position = e.getIntParameter("position");
+			
+			players.get(position).fullHealth();
+			server.broadcast("respawn position="+position, e.getSource());
+		});
 	}
 	
 	public void configureClient(Client client){
@@ -255,6 +280,12 @@ public class Battle extends BasicGameState{
 			int health = e.getIntParameter("health");
 			
 			players.get(position).setHealth(health);
+		});
+		
+		client.on("respawn", e -> {
+			int position = e.getIntParameter("position");
+			
+			players.get(position).fullHealth();
 		});
 	}
 
@@ -290,6 +321,18 @@ public class Battle extends BasicGameState{
 
 	public Player getPlayer() {
 		return players.get(currentPlayerPosition);
+	}
+	
+	private void respawn(){
+		if(hosting){
+			server.broadcast("respawn position="+currentPlayerPosition);
+		}
+		else{
+			client.send("respawn position="+currentPlayerPosition);
+		}
+		Point slot = map.getRandomSlotLocation();
+		getPlayer().setCoordinates(slot.x, slot.y, false);
+		getPlayer().fullHealth();
 	}
 	
 }

@@ -71,33 +71,34 @@ public class Tank {
 	}
 	
 	public void render(boolean center, Graphics g, Map map){
-		
-		int displayedX = x;
-		int displayedY = y;
-		
-		if(center){
-			displayedX = Configuration.SCREEN_WIDTH / 2;
-			displayedY = Configuration.SCREEN_HEIGHT / 2;
+		if(health > 0){
+			int displayedX = x;
+			int displayedY = y;
+			
+			if(center){
+				displayedX = Configuration.SCREEN_WIDTH / 2;
+				displayedY = Configuration.SCREEN_HEIGHT / 2;
+			}
+			else{
+				displayedX += map.getX();
+				displayedY += map.getY();
+			}
+	
+			double angle = Math.toRadians(90) - Math.toRadians(rotation);
+	
+			double hypo = (double)body.getWidth() / 2.0 + (double)carterpillar.getWidth() / 2.0 - 2;
+			int xC1 = displayedX - (int) (Math.cos(angle) * hypo);
+			int yC1 = displayedY + (int) (Math.sin(angle) * hypo);
+			int xC2 = displayedX + (int) (Math.cos(angle) * hypo);
+			int yC2 = displayedY - (int) (Math.sin(angle) * hypo);
+			
+			carterpillar.render(xC1, yC1, moving);
+			carterpillar.render(xC2, yC2, moving);
+			body.drawCentered(displayedX, displayedY);
+			canon.render(displayedX, displayedY);
+			
+			g.drawString(name, displayedX - name.length() * 10 / 2, displayedY - body.getHeight() * 2);
 		}
-		else{
-			displayedX += map.getX();
-			displayedY += map.getY();
-		}
-
-		double angle = Math.toRadians(90) - Math.toRadians(rotation);
-
-		double hypo = (double)body.getWidth() / 2.0 + (double)carterpillar.getWidth() / 2.0 - 2;
-		int xC1 = displayedX - (int) (Math.cos(angle) * hypo);
-		int yC1 = displayedY + (int) (Math.sin(angle) * hypo);
-		int xC2 = displayedX + (int) (Math.cos(angle) * hypo);
-		int yC2 = displayedY - (int) (Math.sin(angle) * hypo);
-		
-		carterpillar.render(xC1, yC1, moving);
-		carterpillar.render(xC2, yC2, moving);
-		body.drawCentered(displayedX, displayedY);
-		canon.render(displayedX, displayedY);
-		
-		g.drawString(name, displayedX - name.length() * 10 / 2, displayedY - body.getHeight() * 2);
 	}
 	
 	public void render(int x, int y){
@@ -221,7 +222,7 @@ public class Tank {
 			boolean collides = hitbox.copy(dx, dy).intersects(map.getHitbox());
 			if(!collides){
 				for(Player p : map.getPlayers()){
-					if(p != this){
+					if(p != this && p.getHealth() > 0){
 						if(hitbox.copy(dx, dy).intersects(p.getHitbox())){
 							collides = true;
 							dx /= 2;
@@ -318,5 +319,9 @@ public class Tank {
 	
 	public void setHealth(int health) {
 		this.health = Math.min(Math.max(0, health), getMaximumHealth());
+	}
+	
+	public void fullHealth() {
+		health = getMaximumHealth();
 	}
 }

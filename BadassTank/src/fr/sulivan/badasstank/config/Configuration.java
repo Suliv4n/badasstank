@@ -11,4 +11,6 @@ public class Configuration {
 	public static final String RESOURCES_FOLDER = "resources/";
 	public static final String PIECES_FILE = RESOURCES_FOLDER + "pieces.xml";
 	public static final int DEFAULT_PORT = 1337;
+	public static final int MAXIMUM_TIME_BEFORE_RESPAWN = 10_000;
+	public static final int MINIMUM_TIME_BEFORE_RESPAWN = 10_000;
 }
