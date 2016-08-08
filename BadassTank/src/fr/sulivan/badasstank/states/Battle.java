@@ -104,7 +104,6 @@ public class Battle extends BasicGameState{
 		message += " y=" + player.getY();
 		message += " angle=" + player.getRotation();
 		message += " canonrotation=" + player.getCanon().getRotation();
-		message += " health=" + player.getHealth();
 		
 		return message;
 	}
@@ -279,7 +278,9 @@ public class Battle extends BasicGameState{
 			int position = e.getIntParameter("position");
 			int health = e.getIntParameter("health");
 			
-			players.get(position).setHealth(health);
+			if(position != currentPlayerPosition){
+				players.get(position).setHealth(health);
+			}
 		});
 		
 		client.on("respawn", e -> {
