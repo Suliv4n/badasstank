@@ -146,7 +146,7 @@ public class Battle extends BasicGameState{
 		
 		//Rotation du canon en fonction 
 		player.getCanon().setRotation(Configuration.SCREEN_WIDTH / 2, Configuration.SCREEN_HEIGHT / 2 , in.getAbsoluteMouseX(), in.getAbsoluteMouseY());
-		player.update(map, true);
+		player.update(map, true, delta);
 		
 		if(!getMessageCurrentState().equals(lastUpdate)){
 			if(hosting){
@@ -159,16 +159,18 @@ public class Battle extends BasicGameState{
 		}
 		
 		if(in.isMousePressed(Input.MOUSE_LEFT_BUTTON)){
-			int dx = in.getAbsoluteMouseX() - map.getX();
-			int dy = in.getAbsoluteMouseY() - map.getY();
-			if(hosting){
-				server.broadcast("fire position="+currentPlayerPosition+" dx="+dx+" dy="+dy);
+			if(getPlayer().canShoot()){
+				int dx = in.getAbsoluteMouseX() - map.getX();
+				int dy = in.getAbsoluteMouseY() - map.getY();
+				if(hosting){
+					server.broadcast("fire position="+currentPlayerPosition+" dx="+dx+" dy="+dy);
+				}
+				else{
+					client.send("fire position="+currentPlayerPosition+" dx="+dx+" dy="+dy);
+				}
+				
+				bullets.add((BulletDisplayer) player.fire(player.getX(), player.getY(), in.getAbsoluteMouseX() - map.getX(), in.getAbsoluteMouseY() - map.getY()));
 			}
-			else{
-				client.send("fire position="+currentPlayerPosition+" dx="+dx+" dy="+dy);
-			}
-			
-			bullets.add((BulletDisplayer) player.fire(player.getX(), player.getY(), in.getAbsoluteMouseX() - map.getX(), in.getAbsoluteMouseY() - map.getY()));
 		}
 		
 		//Update bullets

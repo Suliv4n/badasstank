@@ -217,5 +217,9 @@ public class BarUI
 	public int getWidth() {
 		return width +( border ? 2 : 0);
 	}
+
+	public void setBarColor(Color color) {
+		foregroundColor = color;
+	}
 	
 }

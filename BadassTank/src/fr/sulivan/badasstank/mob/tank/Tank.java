@@ -39,10 +39,9 @@ public class Tank {
 	private int maximumBaseHealth = 10;
 	private int health;
 	
+	
 	public Tank(Carterpillar carterpillar, Canon canon, Color color, Body body, String name)
 	{
-		
-		
 		this.name = name;
 		
 		this.carterpillar = carterpillar; 
@@ -68,6 +67,7 @@ public class Tank {
 		setRotation(0);
 		
 		health = getMaximumHealth();
+
 	}
 	
 	public void render(boolean center, Graphics g, Map map){
@@ -99,6 +99,7 @@ public class Tank {
 			
 			g.drawString(name, displayedX - name.length() * 10 / 2, displayedY - body.getHeight() * 2);
 		}
+		
 	}
 	
 	public void render(int x, int y){
@@ -214,7 +215,7 @@ public class Tank {
 		return canon.getPower();
 	}
 	
-	public void update(Map map, boolean center){
+	public void update(Map map, boolean center, int delta){
 		if(moving){
 			double dx = Math.cos(Math.toRadians(rotation)) * getSpeed() * (back ? -1 : 1);
 			double dy = Math.sin(Math.toRadians(rotation)) * getSpeed() * (back ? -1 : 1);
@@ -255,6 +256,8 @@ public class Tank {
 			
 			}
 		}
+		
+		canon.delta(delta);
 	}
 	
 	public Displayer fire(int x1, int y1, int x2, int y2){
@@ -323,5 +326,9 @@ public class Tank {
 	
 	public void fullHealth() {
 		health = getMaximumHealth();
+	}
+	
+	public boolean canShoot() {
+		return canon.canShoot();
 	}
 }

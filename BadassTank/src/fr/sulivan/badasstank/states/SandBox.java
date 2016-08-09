@@ -239,7 +239,7 @@ public class SandBox extends BasicGameState{
 		}
 		
 		player1.getCanon().setRotation(Configuration.SCREEN_WIDTH / 2, Configuration.SCREEN_HEIGHT / 2 , in.getAbsoluteMouseX(), in.getAbsoluteMouseY());
-		player1.update(map, true);
+		player1.update(map, true, delta);
 		
 		ArrayList<Displayer> disposed = new ArrayList<Displayer>();
 		for(Displayer d : displayers){
