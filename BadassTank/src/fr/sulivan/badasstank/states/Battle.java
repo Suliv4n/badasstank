@@ -317,6 +317,7 @@ public class Battle extends BasicGameState{
 			}
 		}
 	}
+	
 
 	public Map getMap() {
 		return map;
@@ -336,6 +337,16 @@ public class Battle extends BasicGameState{
 		Point slot = map.getRandomSlotLocation();
 		getPlayer().setCoordinates(slot.x, slot.y, false);
 		getPlayer().fullHealth();
+		
+		
+		int mapX = Configuration.SCREEN_WIDTH / 2 - getPlayer().getX();
+		int mapY = Configuration.SCREEN_HEIGHT / 2 - getPlayer().getY();
+		
+		map.setDisplayedCoordinate(mapX, mapY);
+		
+		for(Integer i: players.keySet()){
+			players.get(i).setHitbox(map.getX() + players.get(i).getX(), map.getY()  + players.get(i).getY());
+		}
 	}
 	
 }

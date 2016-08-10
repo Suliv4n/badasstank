@@ -226,6 +226,7 @@ public class Tank {
 					if(p != this && p.getHealth() > 0){
 						if(hitbox.copy(dx, dy).intersects(p.getHitbox())){
 							collides = true;
+							/*
 							dx /= 2;
 							dy /= 2;
 							((Tank)p).hitbox.moveX(dx);
@@ -234,6 +235,7 @@ public class Tank {
 							((Tank)p).realY += dy;
 							((Tank)p).x = (int) ((Tank)p).realX;
 							((Tank)p).y = (int) ((Tank)p).realY;
+							*/
 						}
 					}
 				}
