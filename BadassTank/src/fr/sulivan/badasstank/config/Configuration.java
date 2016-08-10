@@ -15,5 +15,5 @@ public class Configuration {
 	public static final int DEFAULT_PORT = 1337;
 	public static final int MAXIMUM_TIME_BEFORE_RESPAWN = 10_000;
 	public static final int MINIMUM_TIME_BEFORE_RESPAWN = 10_000;
-	
+	public static final int TIME_MAXIMUM_IN_GAME_ROOM = 5 * 60 * 1000;
 }

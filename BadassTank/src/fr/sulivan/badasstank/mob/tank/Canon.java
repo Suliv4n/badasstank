@@ -73,12 +73,10 @@ public class Canon extends TankPiece implements Cloneable {
 	}
 	
 	public Displayer fire(Tank source, int x1, int y1, int x2, int y2){
-		if(canShoot()){
-			currentCooldown = cooldown;
-			return new BulletDisplayer(source, getBulletImage(), getParticles(), x1, y1, x2, y2, getSpeedBullet(), this.range, this.power);
-		}
+
+		currentCooldown = cooldown;
+		return new BulletDisplayer(source, getBulletImage(), getParticles(), x1, y1, x2, y2, getSpeedBullet(), this.range, this.power);
 		
-		return null;
 	}
 	
 	//Bullet
