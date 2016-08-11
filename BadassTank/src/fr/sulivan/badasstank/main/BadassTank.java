@@ -166,6 +166,10 @@ public class BadassTank extends StateBasedGame
 		}
 	}
 
+	public static void changeState(int id) {
+		game.enterState(id);
+	}
+
 
 
 }

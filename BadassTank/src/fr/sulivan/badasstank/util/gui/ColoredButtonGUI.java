@@ -71,4 +71,9 @@ public class ColoredButtonGUI extends ButtonGUI{
 	public int getHeight() {
 		return image.getHeight();
 	}
+
+	public void setLocation(int x, int y) {
+		setX(x);
+		setY(y);
+	}
 }

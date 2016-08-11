@@ -16,12 +16,14 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import fr.sulivan.badasstank.config.Configuration;
 import fr.sulivan.badasstank.main.BadassTank;
+import fr.sulivan.badasstank.util.gui.ColoredButtonGUI;
 import fr.sulivan.badasstank.util.gui.TexturedButtonGUI;
 
 public class JoinConfiguration extends BasicGameState{
 
 	private TextField textFieldAddress;
 	private TexturedButtonGUI goButton;
+	private ColoredButtonGUI backButton;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
@@ -52,6 +54,12 @@ public class JoinConfiguration extends BasicGameState{
 				e.printStackTrace();
 			}
 		});
+		
+		backButton = new ColoredButtonGUI(new Image(Configuration.RESOURCES_FOLDER+"buttons/back.png", new Color(255, 0, 255)), Configuration.BACK_BUTTON_COLOR);
+		backButton.setLocation(0, Configuration.SCREEN_HEIGHT - backButton.getHeight());
+		backButton.setOnClick(() -> {
+			BadassTank.changeState(ID.TITLE_SCREEN);
+		});
 	}
 	
 
@@ -62,6 +70,7 @@ public class JoinConfiguration extends BasicGameState{
 
 		textFieldAddress.render(container, g);
 		goButton.render(g);
+		backButton.render(g);
 	}
 	
 	
@@ -70,7 +79,9 @@ public class JoinConfiguration extends BasicGameState{
 			throws SlickException {
 		textFieldAddress.setFocus(true);
 		goButton.update(container);
+		backButton.update(container);
 	}
+	
 	@Override
 	public int getID() {
 		return ID.JOIN_CONFIGURATION;
